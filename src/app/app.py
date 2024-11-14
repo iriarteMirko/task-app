@@ -1,5 +1,5 @@
 import flet as ft
-from src.components.dashboard_component import DashboardComponent
+from .modules.dashboard_module import *
 
 class TaskApp:
     def __init__(self, page: ft.Page):

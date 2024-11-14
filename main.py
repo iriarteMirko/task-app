@@ -1,5 +1,5 @@
 import flet as ft
-from src.app import TaskApp
+from src.app.app import TaskApp
 
 def main(page: ft.Page):
     TaskApp(page)
