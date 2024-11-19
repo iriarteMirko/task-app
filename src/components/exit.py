@@ -31,28 +31,34 @@ class Exit:
                 color=AppConfig.COLORS["bbva_dark_gray"],
             ),
             actions=[
-                ft.TextButton(
-                    content=ft.Row(
-                        controls = [
-                            ft.Image(src=AppConfig.ICONS["wrong"], width=20, fit=ft.ImageFit.CONTAIN),
-                            ft.Text("Si", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
-                        ],
-                        spacing=10,
-                    ),
-                    on_click=close_app
-                ),
-                ft.TextButton(
-                    content=ft.Row(
-                        controls = [
-                            ft.Image(src=AppConfig.ICONS["wrong"], width=20, fit=ft.ImageFit.CONTAIN),
-                            ft.Text("No", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
-                        ],
-                        spacing=10,
-                    ),
-                    on_click=dismiss_dialog
-                ),
+                ft.Row(
+                    controls=[
+                        ft.TextButton(
+                            content=ft.Row(
+                                controls=[
+                                    ft.Image(src=AppConfig.ICONS["wrong"], width=20, fit=ft.ImageFit.CONTAIN),
+                                    ft.Text("Sí", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
+                                ],
+                                spacing=10,
+                            ),
+                            on_click=close_app
+                        ),
+                        ft.TextButton(
+                            content=ft.Row(
+                                controls=[
+                                    ft.Image(src=AppConfig.ICONS["wrong"], width=20, fit=ft.ImageFit.CONTAIN),
+                                    ft.Text("No", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
+                                ],
+                                spacing=10,
+                            ),
+                            on_click=dismiss_dialog
+                        ),
+                    ],
+                    alignment="center",
+                    spacing=20,
+                )
             ],
-            actions_alignment="end",
+            actions_alignment="center",
         )
         
         # Abrir el cuadro de diálogo
