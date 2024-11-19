@@ -4,7 +4,6 @@ from src.utils.utils import (
     get_last_date_pagos, 
     get_or_create_folder, 
     get_hour_am_pm, 
-    clean_columns, 
     start_file, 
     format_excel
 )
@@ -23,6 +22,7 @@ class Instruccion_Pagos():
         self.last_date = get_last_date_pagos(f'input/pagos/{self.fecha}')
         self.folder_path = get_or_create_folder('files', pagos=True)
         self.hora = get_hour_am_pm()
+        
         self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'
         self.asignacion_path = f'input/asignacion/{self.fecha}/base_asignacion_{self.mes_año}.xlsx'
         
@@ -34,15 +34,13 @@ class Instruccion_Pagos():
         
         self.mono_path = os.path.abspath(self.monoproducto)
         self.multi_path = os.path.abspath(self.multiproducto)
-        self.react_path = os.path.abspath(self.reactiva)
+        self.reactiva_path = os.path.abspath(self.reactiva)
         self.no_enviados_path = os.path.abspath(self.no_enviados)
         self.enviados_path = os.path.abspath(self.enviados)
         
-        
-        self.flag_reactiva = True
-        self.sender = CorreoMultiproducto(self.fecha, self.folder_path, self.hora, self.flag_reactiva).enviar_correo()
+        self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE', 'REACTIVA_KST']
     
-    def load_pagos(self):
+    def load_base_pagos(self):
         df_base = pd.read_excel(self.base_pagos_path)
         
         fecha_formateada = pd.to_datetime('today').strftime('%d-%b')
@@ -61,6 +59,164 @@ class Instruccion_Pagos():
         
         df_base['CLAVSERV'] = df_base['CLAVSERV'].astype(str).str.zfill(4)
         df_base['CENTROPAGO'] = df_base['CENTROPAGO'].astype(str).str.zfill(4)
+        
+        self.df_base = df_base
+    
+    def load_base_asignacion(self):
+        df_asignacion = pd.read_excel(self.asignacion_path)
+        
+        cols_asignacion = ['CC', 'CONTRATO', 'NOMBRE_CLIENTE', 'TIPO_CARTERA', 'TIPO_FONDO', 'CARTERA', 'AGENCIA', 'FLAG']
+        df_asignacion = df_asignacion[cols_asignacion]
+        
+        df_asignacion['CC'] = df_asignacion['CC'].astype('Int64').astype(str).str.zfill(8)
+        df_asignacion['CONTRATO'] = df_asignacion['CONTRATO'].astype('Int64').astype(str).str.zfill(18)
+        
+        self.df_asignacion = df_asignacion
+    
+    def load_backups(self):
+        self.df_base_backup = self.df_base.copy()
+        self.df_asignacion_backup = self.df_asignacion.copy()
+        self.base_count = self.df_base_backup.shape[0]
+    
+    def actualizar_tipo_cartera(df: pd.DataFrame) -> pd.DataFrame:
+        df['TIPO_CARTERA'] = np.where(
+            df['TIPO_CARTERA'].eq('UNSECURED').any(), 'UNSECURED',
+            np.where(
+                ~df['TIPO_CARTERA'].eq('NULL').any(), 'SECURED', 
+                np.where(
+                    ~df['TIPO_CARTERA'].eq('SECURED').any(), 'NULL', 'SECURED/NULL'
+                )
+            )
+        )
+        return df
+    
+    def merge_dataframes(self):
+        self.df_base_backup = self.df_base_backup.merge(self.df_asignacion_backup, on='CC', how='left')
+        self.df_base_backup.sort_values(by=['CC', 'TIPO_CARTERA'], ascending=[True, False], inplace=True)
+        
+        filtro = (self.df_base_backup['FLAG'] != 1) & (self.df_base_backup['FLAG'].notna())
+        df_base_filtro = self.df_base_backup.loc[filtro].groupby('CC').apply(self.actualizar_tipo_cartera).reset_index(drop=True)
+        
+        self.df_base_backup = self.df_base_backup.merge(df_base_filtro[['CC', 'TIPO_CARTERA']], on='CC', how='left', suffixes=('', '_y'))
+        self.df_base_backup['TIPO_CARTERA_FINAL'] = self.df_base_backup['TIPO_CARTERA_y'].fillna(self.df_base_backup['TIPO_CARTERA'])
+        
+        self.df_base_backup.drop(columns=['TIPO_CARTERA', 'TIPO_CARTERA_y'], inplace=True)
+        self.df_base_backup.rename(columns={'TIPO_CARTERA_FINAL': 'TIPO_CARTERA'}, inplace=True)
+        self.df_base_backup.drop_duplicates(subset=['CC', 'IMPORTE', 'MONEDA', 'NOMBRE'], keep='first', inplace=True)
+        
+        self.df_base_backup['TIPO_CARTERA'] = self.df_base_backup['TIPO_CARTERA'].fillna('NULL')
+        self.df_base_backup['TIPO_FONDO'] = self.df_base_backup['TIPO_FONDO'].fillna('NULL')
+        
+        self.df_base_backup['FLAG'] = self.df_base_backup['FLAG'].astype('Int64')
+        self.df_base_backup['CONTRATO'] = self.df_base_backup['CONTRATO'].apply(lambda x: str(int(x)).zfill(18) if pd.notna(x) else x)
+        
+        cols_base = ['FECHA', 'CC', 'CLAVSERV', 'CENTROPAGO', 'IMPORTE', 'MONEDA', 'NOMBRE', 'FLAG', 'CONTRATO', 
+            'TIPO_FONDO', 'CARTERA', 'NOMBRE_CLIENTE', 'FECHA_ENVIO', 'ID_RESPONSABLE', 'TIPO_CARTERA', 'AGENCIA']
+        self.df_base_backup = self.df_base_backup[cols_base]
+    
+    def load_no_encontrados(self):
+        self.df_base_ne = self.df_base_backup[self.df_base_backup['FLAG'].isnull()]
+        self.ne_count = self.df_base_ne.shape[0]
+    
+    def load_monoproducto(self):
+        self.df_mono = self.df_base_backup[self.df_base_backup['FLAG'] == 1]
+        
+        self.df_mono_final = self.df_mono[
+            (self.df_mono['TIPO_CARTERA'] == 'UNSECURED') & 
+            (~self.df_mono['TIPO_FONDO'].isin(self.fondos_gobierno))
+        ]
+        
+        cols_mono = ['FECHA', 'CC', 'CLAVSERV', 'CENTROPAGO', 'IMPORTE', 'MONEDA', 'NOMBRE', 'FLAG', 'CONTRATO', 
+            'TIPO_FONDO', 'CARTERA', 'NOMBRE_CLIENTE', 'FECHA_ENVIO', 'ID_RESPONSABLE', 'TIPO_CARTERA', 'AGENCIA']
+        self.df_mono_final = self.df_mono_final[cols_mono]
+        
+        self.df_mono_final.sort_values(by=['FECHA', 'CC'], inplace=True)
+        self.df_mono_final.reset_index(drop=True, inplace=True)
+        self.df_mono_final.to_excel(self.monoproducto, index=False)
+        self.mono_count = self.df_mono_final.shape[0]
+    
+    def load_monoproducto_reactiva(self):
+        self.df_reactiva = self.df_mono[
+            (self.df_mono['TIPO_CARTERA'] == 'UNSECURED') & 
+            (self.df_mono['TIPO_FONDO'].isin(self.fondos_gobierno))
+        ]
+        
+        self.df_reactiva['TIPO_PAGO'] = None
+        cols_reactiva = ['FECHA', 'CC', 'CLAVSERV', 'CENTROPAGO', 'IMPORTE', 'MONEDA', 'NOMBRE', 
+            'FLAG', 'CONTRATO', 'TIPO_FONDO', 'CARTERA', 'TIPO_PAGO', 'FECHA_ENVIO', 'ID_RESPONSABLE']
+        self.df_reactiva = self.df_reactiva[cols_reactiva]
+        
+        self.df_reactiva.sort_values(by=['FECHA', 'CC'], inplace=True)
+        self.df_reactiva.reset_index(drop=True, inplace=True)
+        self.df_reactiva.to_excel(self.reactiva, index=False)
+        self.reactiva_count = self.df_reactiva.shape[0]
+    
+    def load_monoproducto_no_enviados(self):
+        self.df_mono_no_enviado = self.df_mono[(self.df_mono['TIPO_CARTERA'] != 'UNSECURED')]
+        self.mono_no_enviado_count = self.df_mono_no_enviado.shape[0]
+    
+    def load_multiproducto(self):
+        self.df_multi = self.df_base_backup[self.df_base_backup['FLAG'] > 1]
+        self.multi_count = self.df_multi.shape[0]
+        
+        self.df_multi_final = self.df_multi[self.df_multi['TIPO_CARTERA'] == 'UNSECURED']
+        
+        self.df_multi_final['CONTRATO'] = None
+        self.df_multi_final['TIPO_FONDO'] = None
+        self.df_multi_final['CARTERA'] = None
+        self.df_multi_final['TIPO_PAGO'] = None
+        
+        cols_multi = ['FECHA', 'CC', 'CLAVSERV', 'CENTROPAGO', 'IMPORTE', 'MONEDA', 'NOMBRE', 'FLAG', 'CONTRATO', 
+            'TIPO_FONDO', 'CARTERA', 'TIPO_PAGO', 'NOMBRE_CLIENTE', 'FECHA_ENVIO', 'ID_RESPONSABLE']
+        self.df_multi_final = self.df_multi_final[cols_multi]
+        
+        self.df_multi_final.drop_duplicates(subset=['CC', 'IMPORTE', 'MONEDA', 'NOMBRE'], inplace=True)
+        self.df_multi_final.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
+        self.df_multi_final.reset_index(drop=True, inplace=True)
+        self.df_multi_final.to_excel(self.multiproducto, index=False)
+        self.multi_count = self.df_multi_final.shape[0]
+    
+    def load_multiproducto_no_enviados(self):
+        self.df_multi_no_enviado = self.df_multi[(self.df_multi['TIPO_CARTERA'] != 'UNSECURED')]
+        self.multi_no_enviado_count = self.df_multi_no_enviado.shape[0]
+    
+    def load_no_enviados(self):
+        self.df_no_enviados = pd.concat([self.df_mono_no_enviado, self.df_multi_no_enviado, self.df_base_ne])
+        self.df_no_enviados['FLAG'] = self.df_no_enviados['FLAG'].astype('Int64').fillna(0)
+        
+        self.df_no_enviados['CONTRATO'] = self.df_no_enviados.apply(lambda x: None if x['FLAG'] != 1 else x['CONTRATO'], axis=1)
+        self.df_no_enviados['TIPO_FONDO'] = self.df_no_enviados.apply(lambda x: None if x['FLAG'] != 1 else x['TIPO_FONDO'], axis=1)
+        self.df_no_enviados['FLAG'] = self.df_no_enviados['FLAG'].apply(lambda x: 'NE' if x == 0 else x)
+        
+        self.df_no_enviados.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
+        self.df_no_enviados.reset_index(drop=True, inplace=True)
+        self.df_no_enviados.to_excel(self.no_enviados, index=False)
+    
+    def format_files(self):
+        format_excel(self.mono_path, 'mono')
+        format_excel(self.multi_path, 'multi')
+        format_excel(self.reactiva_path, 'react')
+        format_excel(self.no_enviados_path, 'noenv')
+    
+    def open_files(self):
+        start_file(self.mono_path)
+        start_file(self.multi_path)
+        start_file(self.reactiva_path)
+        start_file(self.no_enviados_path)
+    
+    def send_email(self):
+        if self.reactiva_count == 0:
+            flag_reactiva = False
+        else:
+            flag_reactiva = True
+        
+        CorreoMultiproducto(self.fecha, self.folder_path, self.hora, flag_reactiva).enviar_correo()
     
     def load_agencias():
+        pass
+    
+    def subproccess_1(self):
+        pass
+    
+    def subproccess_2(self):
         pass
