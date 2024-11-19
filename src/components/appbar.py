@@ -4,15 +4,15 @@ from src.config import AppConfig
 
 def create_appbar(page: ft.Page):
     """Crea la barra superior con un menú desplegable y altura personalizada."""
-    return ft.AppBar(
-        title=ft.Image(
-            src=AppConfig.ICONS["bbva_white"],
-            width=150,
-            fit=ft.ImageFit.CONTAIN,
-        ),
+    return ft.Container(
+        height=100,
+        padding=ft.padding.only(left=20, right=20),
+        margin=ft.margin.only(bottom=-10),
         bgcolor=AppConfig.COLORS["bbva_navy"],
-        actions=[
-            ft.Container(
+        content=ft.Row(
+            controls=[
+                ft.Image(src=AppConfig.ICONS["bbva_white"],width=150,fit=ft.ImageFit.CONTAIN),
+                ft.Container(expand=True),
                 ft.PopupMenuButton(
                     content=ft.Image(src=AppConfig.ICONS["menu"], width=30, fit=ft.ImageFit.CONTAIN),
                     items=[
@@ -30,9 +30,10 @@ def create_appbar(page: ft.Page):
                         ),
                     ],
                 ),
-                margin=ft.margin.only(right=10),
-            ),
-        ],
+            ],
+            alignment="center",
+            vertical_alignment="center",
+        ),
     )
 
 def create_menu_item(icon_src: str, text: str):
