@@ -18,11 +18,14 @@ class Exit:
         # Crear el cuadro de diálogo
         self.page.dialog = ft.AlertDialog(
             modal=True,
-            title=ft.Text(
-                "Confirmar Cierre",
-                size=AppConfig.TEXT_STYLES["title"]["size"],
-                weight=AppConfig.TEXT_STYLES["title"]["weight"],
-                color=AppConfig.COLORS["bbva_medium_blue"],
+            title=ft.Container(
+                content=ft.Row(
+                    controls=[
+                        ft.Image(src=AppConfig.ICONS["warning"], width=20, fit=ft.ImageFit.CONTAIN),
+                        ft.Text("Confirmar Cierre", size=20, weight="bold", color=AppConfig.COLORS["bbva_medium_blue"]),
+                    ],
+                    spacing=10,
+                ),
             ),
             content=ft.Text(
                 "¿Está seguro de que desea cerrar la aplicación?",
@@ -36,7 +39,7 @@ class Exit:
                         ft.TextButton(
                             content=ft.Row(
                                 controls=[
-                                    ft.Image(src=AppConfig.ICONS["wrong"], width=20, fit=ft.ImageFit.CONTAIN),
+                                    ft.Image(src=AppConfig.ICONS["right"], width=20, fit=ft.ImageFit.CONTAIN),
                                     ft.Text("Sí", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
                                 ],
                                 spacing=10,
