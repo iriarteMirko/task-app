@@ -41,7 +41,7 @@ def create_menu_item(icon_src: str, text: str):
     return ft.Row(
         controls=[
             ft.Image(src=icon_src, width=20, fit=ft.ImageFit.CONTAIN),
-            ft.Text(text, size=14, color=AppConfig.COLORS["bbva_navy"]),
+            ft.Text(text, size=14, color=AppConfig.COLORS["bbva_medium_blue"]),
         ],
         alignment="start",  # Alinea el ícono y el texto a la izquierda
         spacing=10,  # Espaciado entre ícono y texto
