@@ -10,14 +10,13 @@ def create_sidebar(on_select):
             label_type=ft.NavigationRailLabelType.ALL,
             bgcolor=AppConfig.COLORS["bbva_core_blue"],
             indicator_color=AppConfig.COLORS["bbva_sky_light_blue"],
-            indicator_shape=ft.RoundedRectangleBorder(radius=8),
+            indicator_shape=ft.RoundedRectangleBorder(radius=0),
             selected_label_text_style=ft.TextStyle(color=AppConfig.COLORS["bbva_sky_light_blue"],size=14, font_family=AppConfig.FONT_FAMILY["bold"]),
             unselected_label_text_style=ft.TextStyle(color=AppConfig.COLORS["bbva_medium_blue"],size=12, font_family=AppConfig.FONT_FAMILY["regular"]),
             destinations=[
                 ft.NavigationRailDestination(
                     icon_content=ft.Image(src=AppConfig.ICONS["home"], width=20, fit=ft.ImageFit.CONTAIN,),
                     label="Inicio",
-                    
                 ),
                 ft.NavigationRailDestination(
                     icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN,),
