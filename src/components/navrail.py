@@ -7,18 +7,18 @@ def create_navrail(on_select):
     return ft.NavigationRail(
         selected_index=0,
         label_type=ft.NavigationRailLabelType.ALL,
-        bgcolor=AppConfig.COLORS["primary_light"],
+        bgcolor=AppConfig.COLORS["bbva_core_light_blue"],
         destinations=[
             ft.NavigationRailDestination(
                 icon=ft.Image(src=AppConfig.ICONS["home"], width=24),
                 label="Inicio",
             ),
             ft.NavigationRailDestination(
-                icon=ft.Image(src=AppConfig.ICONS["process1"], width=24),
+                icon=ft.Image(src=AppConfig.ICONS["process"], width=24),
                 label="Proceso 1",
             ),
             ft.NavigationRailDestination(
-                icon=ft.Image(src=AppConfig.ICONS["process2"], width=24),
+                icon=ft.Image(src=AppConfig.ICONS["process"], width=24),
                 label="Proceso 2",
             ),
         ],

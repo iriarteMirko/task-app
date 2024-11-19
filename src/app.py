@@ -1,4 +1,5 @@
 import flet as ft
+from src.config import AppConfig
 from src.components.appbar import create_appbar
 from src.components.navrail import create_navrail
 from src.components.content import ContentArea
@@ -7,8 +8,10 @@ from src.components.content import ContentArea
 class TaskApp:
     def __init__(self, page: ft.Page):
         self.page = page
-        self.page.title = "Task App - Automización"
+        self.page.title = "Task App - BBVA"
         self.page.theme_mode = "light"  # Tema inicial
+        # Registrar las fuentes
+        self.page.fonts = AppConfig.FONTS
         # Instancia del área de contenido
         self.content_area = ContentArea()
         # Construir la interfaz

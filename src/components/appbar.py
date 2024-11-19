@@ -5,8 +5,13 @@ from src.config import AppConfig
 def create_appbar(page: ft.Page):
     """Crea la barra superior con un menú desplegable."""
     return ft.AppBar(
-        title=ft.Text("Task App - BBVA", color=AppConfig.COLORS["white"]),
-        bgcolor=AppConfig.COLORS["primary"],
+        title=ft.Text(
+            "Task App - BBVA",
+            font_family=AppConfig.FONT_FAMILY["bold"],
+            size=AppConfig.TEXT_STYLES["title"]["size"],
+            color=AppConfig.COLORS["bbva_white"],
+        ),
+        bgcolor=AppConfig.COLORS["bbva_core_blue"],
         actions=[
             ft.PopupMenuButton(
                 items=[
