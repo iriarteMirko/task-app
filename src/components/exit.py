@@ -45,6 +45,10 @@ class Exit:
                                 ],
                                 spacing=10,
                             ),
+                            style=ft.ButtonStyle(
+                                shape=ft.RoundedRectangleBorder(radius=0),
+                                padding=ft.padding.only(left=20, right=20, top=20, bottom=20),
+                            ),
                             on_click=close_app
                         ),
                         ft.TextButton(
@@ -54,6 +58,10 @@ class Exit:
                                     ft.Text("No", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
                                 ],
                                 spacing=10,
+                            ),
+                            style=ft.ButtonStyle(
+                                shape=ft.RoundedRectangleBorder(radius=0),
+                                padding=ft.padding.only(left=20, right=20, top=20, bottom=20),
                             ),
                             on_click=dismiss_dialog
                         ),
