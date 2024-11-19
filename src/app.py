@@ -10,7 +10,7 @@ class TaskApp:
         self.page = page
         self.page.title = "Task App - BBVA"
         self.page.theme_mode = "light"
-        page.padding = 0
+        self.page.padding = 0
         self.page.fonts = AppConfig.FONTS
         self.content_area = ContentArea()
         self.build_ui()

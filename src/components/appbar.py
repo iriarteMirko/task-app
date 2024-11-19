@@ -1,10 +1,11 @@
 import flet as ft
 from src.config import AppConfig
 from src.components.profile import Profile
-from src.components.content import ContentArea
+from src.components.configuration import Configuration
+from src.components.destroy import Destroy
 
 
-def create_appbar(page: ft.Page, content_area: ContentArea):
+def create_appbar(page: ft.Page, content_area):
     """Crea la barra superior con un menú desplegable y altura personalizada."""
     return ft.Container(
         height=100,
@@ -21,15 +22,15 @@ def create_appbar(page: ft.Page, content_area: ContentArea):
                     items=[
                         ft.PopupMenuItem(
                             content=create_menu_item(AppConfig.ICONS["profile"], "Perfil"),
-                            on_click=lambda e: load_profile(content_area),
+                            on_click=lambda e: Profile(content_area).load_profile(),
                         ),
                         ft.PopupMenuItem(
                             content=create_menu_item(AppConfig.ICONS["settings"], "Configuración"),
-                            on_click=lambda e: show_snack_bar(page, "Configuración seleccionada"),
+                            on_click=lambda e: Configuration(content_area).load_configuration(),
                         ),
                         ft.PopupMenuItem(
                             content=create_menu_item(AppConfig.ICONS["on_off"], "On/Off"),
-                            on_click=lambda e: show_snack_bar(page, "On/Off seleccionado"),
+                            on_click=lambda e: Destroy(content_area).load_destroy(),
                         ),
                     ],
                 ),
@@ -49,15 +50,3 @@ def create_menu_item(icon_src: str, text: str):
         alignment="start",  # Alinea el ícono y el texto a la izquierda
         spacing=10,  # Espaciado entre ícono y texto
     )
-
-def load_profile(content_area: ContentArea):
-    """Carga el contenido de la sección 'Perfil' en el área dinámica."""
-    content_area.container.content = Profile().container
-    content_area.container.update()
-
-
-def show_snack_bar(page: ft.Page, message: str):
-    """Muestra un mensaje temporal en la barra inferior."""
-    page.snack_bar = ft.SnackBar(ft.Text(message))
-    page.snack_bar.open = True
-    page.update()
