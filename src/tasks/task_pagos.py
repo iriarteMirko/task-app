@@ -187,6 +187,7 @@ class TaskPagos():
         self.df_no_enviados['CONTRATO'] = self.df_no_enviados.apply(lambda x: None if x['FLAG'] != 1 else x['CONTRATO'], axis=1)
         self.df_no_enviados['TIPO_FONDO'] = self.df_no_enviados.apply(lambda x: None if x['FLAG'] != 1 else x['TIPO_FONDO'], axis=1)
         self.df_no_enviados['FLAG'] = self.df_no_enviados['FLAG'].apply(lambda x: 'NE' if x == 0 else x)
+        self.df_no_enviados.fillna('NULL', inplace=True)
         
         self.df_no_enviados.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
         self.df_no_enviados.reset_index(drop=True, inplace=True)
@@ -349,10 +350,10 @@ class TaskPagos():
         print('Cargando bases...')
         self.load_base_pagos()
         self.load_base_asignacion()
-        self.load_backups()
         print('Bases cargadas.')
     
-    def subproccess_1(self):
+    def subproccess_1(self):        
+        self.load_backups()
         self.merge_dataframes()
         self.load_no_encontrados()
         self.load_monoproducto()

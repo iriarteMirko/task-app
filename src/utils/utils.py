@@ -58,15 +58,10 @@ def get_or_create_folder(folder_path: str, pagos: bool = False) -> str:
     
     if not os.path.exists(carpeta_hoy):
         os.makedirs(carpeta_hoy)
-        print(f'Carpeta creada: {carpeta_hoy}')
-    else:
-        print(f'La carpeta ya existe: {carpeta_hoy}')
     
     if pagos:
         if not os.path.exists(f'{carpeta_hoy}/agencias'):
             os.makedirs(f'{carpeta_hoy}/agencias')
-        else:
-            print(f'La carpeta ya existe: {carpeta_hoy}/agencias')
     
     return carpeta_hoy
 

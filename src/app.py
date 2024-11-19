@@ -14,6 +14,7 @@ class TaskApp:
         self.page.padding = 0
         self.page.fonts = AppConfig.FONTS
         self.content_area = ContentArea()
+        self.task_pagos_content = ContentTaskPagos()
         self.build_ui()
     
     def build_ui(self):
@@ -30,8 +31,8 @@ class TaskApp:
         """Gestiona el cambio de selección en la barra lateral."""
         content_mapping = {
             0: lambda: self.content_area.update_content(),
-            1: lambda: self.content_area.update_content(ContentTaskPagos()),
-            2: lambda: self.content_area.update_content()
+            1: lambda: self.content_area.update_content(self.task_pagos_content),
+            2: lambda: self.content_area.update_content(),
         }
         content_mapping.get(e.control.selected_index, lambda: None)()
         self.page.update()
