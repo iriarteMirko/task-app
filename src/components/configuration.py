@@ -6,35 +6,68 @@ from src.components.content import ContentArea
 class Configuration:
     def __init__(self, content_area: ContentArea):
         self.content_area = content_area
-        self.dropdown = ft.Dropdown(
-            label="Selecciona el tema",
-            options=[
-                ft.dropdown.Option("Claro"),
-                ft.dropdown.Option("Oscuro"),
-            ],
-            value="Claro",  # Tema por defecto
-            on_change=self.change_theme,
+        # Crear el título
+        self.title = ft.Text(
+            "Configuración",
+            size=AppConfig.TEXT_STYLES["title"]["size"],
+            weight=AppConfig.TEXT_STYLES["title"]["weight"],
+            color=AppConfig.COLORS["bbva_medium_blue"],
         )
+        # Crear el Dropdown con opciones personalizadas
+        self.dropdown = ft.Dropdown(
+            label="Seleccionar el tema",
+            options=[
+                ft.dropdown.Option(
+                    key="Claro",
+                    content=ft.Row(
+                        controls=[
+                            ft.Image(src=AppConfig.ICONS["theme_light"], width=20, fit=ft.ImageFit.CONTAIN),
+                            ft.Text("Claro", size=14, color=AppConfig.COLORS["bbva_medium_blue"],),
+                        ],
+                        spacing=10,
+                        alignment="start",
+                    ),
+                ),
+                ft.dropdown.Option(
+                    key="Oscuro",
+                    content=ft.Row(
+                        controls=[
+                            ft.Image(src=AppConfig.ICONS["theme_dark"], width=20, fit=ft.ImageFit.CONTAIN),
+                            ft.Text("Oscuro", size=14, color=AppConfig.COLORS["bbva_medium_blue"]),
+                        ],
+                        spacing=10,
+                        alignment="start",
+                    ),
+                ),
+            ],
+            value="Claro" if content_area.container.page.theme_mode == "light" else "Oscuro",
+            on_change=self.change_theme,
+            width=250,
+        )
+        # Contenedor principal
         self.container = ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Text(
-                        "Configuración",
-                        size=AppConfig.TEXT_STYLES["title"]["size"],
-                        weight=AppConfig.FONT_FAMILY["bold"],
-                        color=AppConfig.COLORS["bbva_medium_blue"],
+                    ft.Container(
+                        content=self.title,
+                        alignment=ft.alignment.top_left,
+                        padding=ft.padding.only(left=20, right=20, top=20, bottom=10),
                     ),
-                    self.dropdown,
+                    ft.Container(
+                        content=self.dropdown,
+                        alignment=ft.alignment.top_left,
+                        padding=ft.padding.only(left=20, right=20, top=10, bottom=20),
+                        width=250,
+                    ),
                 ],
-                spacing=20,
+                alignment=ft.alignment.top_left,
             ),
             expand=True,
-            bgcolor=AppConfig.COLORS["bbva_white"],
-            alignment=ft.alignment.center,
+            alignment=ft.alignment.top_left,
         )
     
     def change_theme(self, e):
-        """Cambia el tema de la aplicación."""
+        """Cambia el tema de la aplicación y actualiza la selección."""
         selected_theme = e.control.value
         if selected_theme == "Claro":
             self.content_area.container.page.theme_mode = "light"
