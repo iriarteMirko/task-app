@@ -192,17 +192,12 @@ class Instruccion_Pagos():
         self.df_no_enviados.reset_index(drop=True, inplace=True)
         self.df_no_enviados.to_excel(self.no_enviados, index=False)
     
-    def format_files(self):
-        format_excel(self.mono_path, 'mono')
-        format_excel(self.multi_path, 'multi')
-        format_excel(self.reactiva_path, 'react')
-        format_excel(self.no_enviados_path, 'noenv')
+    def format_file(self, dict_files: dict[str, str]):
+        for file, validator in dict_files.items():
+            format_excel(file, validator)
     
-    def open_files(self):
-        start_file(self.mono_path)
-        start_file(self.multi_path)
-        start_file(self.reactiva_path)
-        start_file(self.no_enviados_path)
+    def open_file(self, file: str | list[str]):
+        start_file(file)
     
     def send_email(self):
         if self.reactiva_count == 0:
@@ -212,11 +207,156 @@ class Instruccion_Pagos():
         
         CorreoMultiproducto(self.fecha, self.folder_path, self.hora, flag_reactiva).enviar_correo()
     
-    def load_agencias():
-        pass
+    def load_multiproducto_agencias(self):
+        df_1 = pd.read_excel(f'{self.folder_path}/agencias/RJ.xlsx', dtype={'CC': str, 'CONTRATO': str})
+        df_2 = pd.read_excel(f'{self.folder_path}/agencias/CLASA.xlsx', dtype={'CC': str, 'CONTRATO': str})
+        df_3 = pd.read_excel(f'{self.folder_path}/agencias/MORNESE.xlsx', dtype={'CC': str, 'CONTRATO': str})
+        
+        cols_multi = ['FECHA', 'CC', 'CLAVSERV', 'CENTROPAGO', 'IMPORTE', 'MONEDA', 'NOMBRE', 'FLAG', 'CONTRATO', 
+            'TIPO_FONDO', 'CARTERA', 'TIPO_PAGO', 'NOMBRE_CLIENTE', 'FECHA_ENVIO', 'ID_RESPONSABLE']
+        
+        df_1 = df_1[cols_multi]
+        df_2 = df_2[cols_multi]
+        df_3 = df_3[cols_multi]
+        
+        df_1['AGENCIA'] = 'ASESCOM RJ'
+        df_2['AGENCIA'] = 'CLASA MORA'
+        df_3['AGENCIA'] = 'MORNESE MORA'
+        
+        contratos_rj = df_1['CONTRATO'].notna().value_counts()[True]
+        contratos_clasa = df_2['CONTRATO'].notna().value_counts()[True]
+        contratos_mornese = df_3['CONTRATO'].notna().value_counts()[True]
+        print('Contratos RJ:', contratos_rj)
+        print('Contratos CLASA:', contratos_clasa)
+        print('Contratos MORNESE:', contratos_mornese)
+        print('Total:', contratos_rj + contratos_clasa + contratos_mornese)
+        print('--------------------------------------------------------------------------------------------------------------------------------------------')
+        
+        df_agencias = pd.concat([df_1, df_2, df_3])
+        df_agencias.dropna(subset=['CONTRATO'], inplace=True)
+        df_agencias['CONTRATO'] = df_agencias['CONTRATO'].apply(
+            lambda x: str(int(x)).replace(' ', '').zfill(18) 
+            if 16 <= len(str(x).replace(' ', '')) <= 18 
+            else None)
+        df_agencias.dropna(subset=['CONTRATO'], inplace=True)
+        df_agencias.reset_index(drop=True, inplace=True)
+        
+        df_multi = pd.read_excel(self.multi_path, dtype={'CC': str, 'CLAVSERV': str, 'CENTROPAGO': str, 'CONTRATO': str})
+        df_multi['AGENCIA'] = 'NULL'
+        
+        print('Multiproducto Original:', df_multi.shape[0])
+        print('Multiproducto Agencias:', df_agencias.shape[0])
+        print('--------------------------------------------------------------------------------------------------------------------------------------------')
+        
+        df_multi_final = pd.concat([df_multi, df_agencias])
+        
+        df_multi_final['CC'] = df_multi_final['CC'].astype(str).replace(' ', '').astype('Int64').astype(str).str.zfill(8)
+        df_multi_final.drop(columns=['TIPO_FONDO', 'CARTERA'], inplace=True)
+        df_multi_final.sort_values(by=['CC', 'CONTRATO'], inplace=True)
+        df_multi_final.drop_duplicates(subset=['CC', 'IMPORTE', 'MONEDA', 'NOMBRE'], keep='first', inplace=True)
+        df_multi_final.reset_index(drop=True, inplace=True)
+        
+        self.df_asignacion_backup['CC'] = self.df_asignacion_backup['CC'].astype('Int64').astype(str).str.zfill(8)
+        self.df_asignacion_backup['CONTRATO'] = self.df_asignacion_backup['CONTRATO'].apply(lambda x: str(int(x)).replace(' ', '').zfill(18) if pd.notna(x) else x)
+        
+        df_multi_final = df_multi_final.merge(self.df_asignacion_backup, on='CONTRATO', how='left')
+        df_multi_final.rename(columns={'CC_x': 'CC'}, inplace=True)
+        df_multi_final.drop(columns=['CC_y'], inplace=True)
+        
+        df_multi_final['CLAVSERV'] = df_multi_final['CLAVSERV'].astype(str).str.zfill(4)
+        df_multi_final['CENTROPAGO'] = df_multi_final['CENTROPAGO'].astype(str).str.zfill(4)
+        df_multi_final['CONTRATO'] = df_multi_final['CONTRATO'].fillna('NULL')
+        df_multi_final['TIPO_FONDO'] = df_multi_final['TIPO_FONDO'].fillna('NULL')
+        df_multi_final['CARTERA'] = df_multi_final['CARTERA'].fillna('NULL')
+        df_multi_final['TIPO_CARTERA'] = df_multi_final['TIPO_CARTERA'].fillna('NULL')
+        df_multi_final['AGENCIA_y'] = df_multi_final['AGENCIA_y'].fillna('NULL')
+        
+        df_multi_final['AGENCIA_y'] = df_multi_final.apply(
+            lambda x: x['AGENCIA_y'] 
+            if x['AGENCIA_y'] == x['AGENCIA_x'] else f'{x['AGENCIA_x']}/{x['AGENCIA_y']}', 
+            axis=1)
+        
+        df_multi_final.drop(columns=['AGENCIA_x', 'FLAG_y', 'NOMBRE_CLIENTE_y'], inplace=True)
+        df_multi_final.rename(columns={'AGENCIA_y': 'AGENCIA', 'FLAG_x': 'FLAG', 'NOMBRE_CLIENTE_x': 'NOMBRE_CLIENTE'}, inplace=True)
+        
+        cols_multi_final = ['FECHA', 'CC', 'CLAVSERV', 'CENTROPAGO', 'IMPORTE', 'MONEDA', 'NOMBRE', 'FLAG', 'CONTRATO', 'TIPO_FONDO', 'CARTERA', 'TIPO_PAGO', 'NOMBRE_CLIENTE', 'FECHA_ENVIO', 'ID_RESPONSABLE', 'TIPO_CARTERA', 'AGENCIA']
+        df_multi_final = df_multi_final[cols_multi_final]
+        df_multi_final.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
+        df_multi_final.reset_index(drop=True, inplace=True)
+        
+        # No Enviados Multiproducto
+        df_no_enviados_multi = df_multi_final[(df_multi_final['CONTRATO'] == 'NULL') | (df_multi_final['TIPO_CARTERA'] != 'UNSECURED')]
+        df_no_enviados_multi['AGENCIA'] = df_no_enviados_multi.apply(lambda x: 'AGENCIA NO IDENTIFICA' if x['CONTRATO'] == 'NULL' else x['AGENCIA'], axis=1)
+        df_no_enviados_multi.drop(columns=['TIPO_PAGO'], inplace=True)
+        print('No enviados Multiproducto:', df_no_enviados_multi.shape[0])
+        
+        # Reactivas Multiproducto
+        df_reactivas_multi = df_multi_final[(df_multi_final['TIPO_CARTERA'] == 'UNSECURED') & (df_multi_final['TIPO_FONDO'].isin(self.fondos_gobierno))]
+        df_reactivas_multi.drop(columns=['NOMBRE_CLIENTE', 'TIPO_CARTERA'], inplace=True)
+        print('Reactivas Multiproducto:', df_reactivas_multi.shape[0])
+        
+        # Total Multiproducto
+        df_multi_final = df_multi_final[(df_multi_final['CONTRATO'] != 'NULL') & 
+                                        (df_multi_final['TIPO_CARTERA'] == 'UNSECURED') & 
+                                        (~df_multi_final['TIPO_FONDO'].isin(self.fondos_gobierno))]
+        df_multi_final.drop(columns=['TIPO_PAGO'], inplace=True)
+        df_multi_final.to_excel(self.multiproducto, index=False)
+        print('Total Multiproducto:', df_multi_final.shape[0])
+        
+        #Total No Enviados
+        df_no_enviados_final = pd.concat([self.df_no_enviados, df_no_enviados_multi])
+        df_no_enviados_final['CONTRATO'] = df_no_enviados_final['CONTRATO'].fillna('NULL')
+        df_no_enviados_final['TIPO_FONDO'] = df_no_enviados_final['TIPO_FONDO'].fillna('NULL')
+        df_no_enviados_final['CARTERA'] = df_no_enviados_final['CARTERA'].fillna('NULL')
+        df_no_enviados_final['TIPO_CARTERA'] = df_no_enviados_final['TIPO_CARTERA'].fillna('NULL')
+        df_no_enviados_final['NOMBRE_CLIENTE'] = df_no_enviados_final['NOMBRE_CLIENTE'].fillna('NULL')
+        df_no_enviados_final['AGENCIA'] = df_no_enviados_final['AGENCIA'].fillna('NULL')
+        df_no_enviados_final['CLAVSERV'] = df_no_enviados_final['CLAVSERV'].apply(lambda x: str(int(x)).replace(' ', '').zfill(4))
+        df_no_enviados_final.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
+        df_no_enviados_final.reset_index(drop=True, inplace=True)
+        df_no_enviados_final.to_excel(self.no_enviados, index=False)
+        
+        #Total Reactiva
+        df_reactiva = pd.read_excel(self.reactiva_path, dtype={'CC': str, 'CLAVSERV': str, 'CENTROPAGO': str, 'CONTRATO': str})
+        df_reactiva_final = pd.concat([df_reactiva, df_reactivas_multi])
+        df_reactiva_final['TIPO_PAGO'] = df_reactiva_final['TIPO_PAGO'].str.upper().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
+        df_reactiva_final['TIPO_PAGO'] = df_reactiva_final['TIPO_PAGO'].replace(' ', '').replace('TOTAL', 'CANCELACION').replace('PARCIAL', 'AMORTIZACION')
+        df_reactiva_final.to_excel(self.reactiva, index=False)
+        
+        # Total Enviados
+        df_enviados = pd.concat([self.df_mono, df_multi_final])
+        df_enviados['CLAVSERV'] = df_enviados['CLAVSERV'].apply(lambda x: str(int(x)).zfill(4))
+        df_enviados['CENTROPAGO'] = df_enviados['CENTROPAGO'].apply(lambda x: str(int(x)).zfill(4))
+        df_enviados.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
+        df_enviados.reset_index(drop=True, inplace=True)
+        df_enviados.to_excel(self.enviados, index=False)
+        
+        print('-------------------------------------------- REPORTE FINAL --------------------------------------------')
+        print('Base Bagos: ', self.df_base.shape)
+        print('--------------------------------------------')
+        print('Monoproducto:', self.df_mono.shape)
+        print('Importe Monoproducto:', round(self.df_mono['IMPORTE'].sum(), 2))
+        print('--------------------------------------------')
+        print('Multiproducto:', df_multi_final.shape)
+        print('Importe Multiproducto:', round(df_multi_final['IMPORTE'].sum(), 2))
+        print('--------------------------------------------')
+        print('Reactiva:', df_reactiva_final.shape)
+        print('Importe Reactiva:', round(df_reactiva_final['IMPORTE'].sum(), 2))
+        print('--------------------------------------------')
+        print('No Enviados:', df_no_enviados_final.shape)
     
     def subproccess_1(self):
-        pass
-    
+        self.load_no_encontrados()
+        self.load_monoproducto()
+        self.load_monoproducto_reactiva()
+        self.load_monoproducto_no_enviados()
+        self.load_multiproducto()
+        self.load_multiproducto_no_enviados()
+        self.load_no_enviados()
+        self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
+        self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
+        
     def subproccess_2(self):
-        pass
+        self.load_multiproducto_agencias()
+        self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})
+        self.open_file([self.multi_path, self.reactiva_path, self.no_enviados_path, self.enviados_path])
