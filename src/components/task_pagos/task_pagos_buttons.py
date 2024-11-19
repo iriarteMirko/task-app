@@ -1,4 +1,6 @@
 import flet as ft
+from src.config import AppConfig
+
 
 def create_task_buttons(task_instance):
     def on_load_bases_click(e):

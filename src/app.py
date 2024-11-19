@@ -3,7 +3,7 @@ from src.config import AppConfig
 from src.components.app.appbar import create_appbar
 from src.components.app.sidebar import create_sidebar
 from src.components.app.content import ContentArea
-from src.components.task_pagos.content import ContentTaskPagos
+from src.components.task_pagos.task_pagos_content import ContentTaskPagos
 
 
 class TaskApp:

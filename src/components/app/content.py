@@ -8,7 +8,7 @@ class ContentArea:
             content=ft.Text(
                 "Bienvenido al inicio",
                 size=AppConfig.TEXT_STYLES["title"]["size"],
-                weight=AppConfig.FONT_FAMILY["bold"],
+                weight=AppConfig.TEXT_STYLES["title"]["weight"],
                 color=AppConfig.COLORS["bbva_medium_blue"],
             ),
             expand=True,
@@ -22,7 +22,8 @@ class ContentArea:
             new_content = ft.Text(
                 "Sin contenido",
                 size=AppConfig.TEXT_STYLES["title"]["size"],
-                weight=AppConfig.FONT_FAMILY["bold"],
+                weight=AppConfig.TEXT_STYLES["title"]["weight"],
                 color=AppConfig.COLORS["bbva_medium_blue"],
             )
         self.container.content = new_content
+        self.container.update()
