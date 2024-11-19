@@ -6,7 +6,12 @@ class ContentTaskPagos(ft.Container):
     def __init__(self):
         super().__init__()
         self.task_pagos = TaskPagos()
-    
-    def render(self):
-        self.content = create_task_buttons(self.task_pagos)
-        self.update()
+        self.content = ft.Column(
+            [
+                ft.Text("Task Pagos",size=20,),
+                create_task_buttons(self.task_pagos),
+            ],
+            spacing=10,
+        )
+        self.expand = True
+        self.alignment = ft.alignment.center

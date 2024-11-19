@@ -353,9 +353,6 @@ class TaskPagos():
         print('Bases cargadas.')
     
     def subproccess_1(self):
-        if self.df_base is None or self.df_asignacion is None:
-            self.load_bases()
-        
         self.merge_dataframes()
         self.load_no_encontrados()
         self.load_monoproducto()

@@ -20,7 +20,7 @@ class ContentArea:
         """Actualiza el contenido del área dinámica."""
         if new_content is None:
             new_content = ft.Text(
-                "Bienvenido al inicio",
+                "Sin contenido",
                 size=AppConfig.TEXT_STYLES["title"]["size"],
                 weight=AppConfig.FONT_FAMILY["bold"],
                 color=AppConfig.COLORS["bbva_medium_blue"],

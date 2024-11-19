@@ -20,7 +20,7 @@ def create_sidebar(on_select):
                 ),
                 ft.NavigationRailDestination(
                     icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN),
-                    label="Proceso 1",
+                    label="Instrucción de Pagos",
                 ),
                 ft.NavigationRailDestination(
                     icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN),

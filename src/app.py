@@ -28,10 +28,10 @@ class TaskApp:
     
     def sidebar_changed(self, e):
         """Gestiona el cambio de selección en la barra lateral."""
-        if e.control.selected_index == 0:
-            self.content_area.update_content()
-        elif e.control.selected_index == 1:
-            self.content_area.update_content(ContentTaskPagos().render())
-        elif e.control.selected_index == 2:
-            self.content_area.update_content()
+        content_mapping = {
+            0: lambda: self.content_area.update_content(),
+            1: lambda: self.content_area.update_content(ContentTaskPagos()),
+            2: lambda: self.content_area.update_content()
+        }
+        content_mapping.get(e.control.selected_index, lambda: None)()
         self.page.update()

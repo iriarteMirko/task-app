@@ -15,7 +15,7 @@ def create_task_buttons(task_instance):
     
     return ft.Column(
         [
-            ft.ElevatedButton("Cargar Bases", on_click=on_load_bases_click),
+            ft.ElevatedButton("Cargar Bases", on_click=on_load_bases_click ,),
             ft.ElevatedButton("Ejecutar Paso 1", on_click=on_subproccess_1_click),
             ft.ElevatedButton("Enviar Correo", on_click=on_send_email_click),
             ft.ElevatedButton("Ejecutar Paso 2", on_click=on_subproccess_2_click),
