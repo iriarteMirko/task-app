@@ -21,3 +21,6 @@ class ContentTaskPagos(ft.Container):
             alignment=ft.alignment.top_left,
             spacing=10,
         )
+        self.bgcolor = AppConfig.COLORS["bbva_navy"]
+        self.alignment = ft.alignment.top_left
+        self.expand = True

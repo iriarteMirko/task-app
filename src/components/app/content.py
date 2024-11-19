@@ -11,9 +11,9 @@ class ContentArea:
                 weight=AppConfig.TEXT_STYLES["title"]["weight"],
                 color=AppConfig.COLORS["bbva_medium_blue"],
             ),
-            expand=True,
             bgcolor=AppConfig.COLORS["bbva_white"],
             alignment=ft.alignment.center,
+            expand=True,
         )
     
     def update_content(self, new_content=None):

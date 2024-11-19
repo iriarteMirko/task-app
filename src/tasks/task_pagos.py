@@ -352,7 +352,7 @@ class TaskPagos():
         self.load_base_asignacion()
         print('Bases cargadas.')
     
-    def subproccess_1(self):        
+    def subproccess_1(self):
         self.load_backups()
         self.merge_dataframes()
         self.load_no_encontrados()
