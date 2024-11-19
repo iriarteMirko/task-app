@@ -16,11 +16,11 @@ import os
 warnings.filterwarnings('ignore')
 
 
-class Instruccion_Pagos():
+class TaskPagos():
     def __init__(self):
         self.mes_año, self.fecha = get_date()
         self.last_date = get_last_date_pagos(f'input/pagos/{self.fecha}')
-        self.folder_path = get_or_create_folder('files', pagos=True)
+        self.folder_path = get_or_create_folder(f'output/pagos/{self.fecha}', pagos=True)
         self.hora = get_hour_am_pm()
         
         self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'
@@ -78,24 +78,24 @@ class Instruccion_Pagos():
         self.df_asignacion_backup = self.df_asignacion.copy()
         self.base_count = self.df_base_backup.shape[0]
     
-    def actualizar_tipo_cartera(df: pd.DataFrame) -> pd.DataFrame:
-        df['TIPO_CARTERA'] = np.where(
-            df['TIPO_CARTERA'].eq('UNSECURED').any(), 'UNSECURED',
-            np.where(
-                ~df['TIPO_CARTERA'].eq('NULL').any(), 'SECURED', 
+    def merge_dataframes(self):
+        def actualizar_tipo_cartera(df: pd.DataFrame) -> pd.DataFrame:
+            df['TIPO_CARTERA'] = np.where(
+                df['TIPO_CARTERA'].eq('UNSECURED').any(), 'UNSECURED',
                 np.where(
-                    ~df['TIPO_CARTERA'].eq('SECURED').any(), 'NULL', 'SECURED/NULL'
+                    ~df['TIPO_CARTERA'].eq('NULL').any(), 'SECURED', 
+                    np.where(
+                        ~df['TIPO_CARTERA'].eq('SECURED').any(), 'NULL', 'SECURED/NULL'
+                    )
                 )
             )
-        )
-        return df
-    
-    def merge_dataframes(self):
+            return df
+        
         self.df_base_backup = self.df_base_backup.merge(self.df_asignacion_backup, on='CC', how='left')
         self.df_base_backup.sort_values(by=['CC', 'TIPO_CARTERA'], ascending=[True, False], inplace=True)
         
         filtro = (self.df_base_backup['FLAG'] != 1) & (self.df_base_backup['FLAG'].notna())
-        df_base_filtro = self.df_base_backup.loc[filtro].groupby('CC').apply(self.actualizar_tipo_cartera).reset_index(drop=True)
+        df_base_filtro = self.df_base_backup.loc[filtro].groupby('CC').apply(actualizar_tipo_cartera).reset_index(drop=True)
         
         self.df_base_backup = self.df_base_backup.merge(df_base_filtro[['CC', 'TIPO_CARTERA']], on='CC', how='left', suffixes=('', '_y'))
         self.df_base_backup['TIPO_CARTERA_FINAL'] = self.df_base_backup['TIPO_CARTERA_y'].fillna(self.df_base_backup['TIPO_CARTERA'])
@@ -191,21 +191,6 @@ class Instruccion_Pagos():
         self.df_no_enviados.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
         self.df_no_enviados.reset_index(drop=True, inplace=True)
         self.df_no_enviados.to_excel(self.no_enviados, index=False)
-    
-    def format_file(self, dict_files: dict[str, str]):
-        for file, validator in dict_files.items():
-            format_excel(file, validator)
-    
-    def open_file(self, file: str | list[str]):
-        start_file(file)
-    
-    def send_email(self):
-        if self.reactiva_count == 0:
-            flag_reactiva = False
-        else:
-            flag_reactiva = True
-        
-        CorreoMultiproducto(self.fecha, self.folder_path, self.hora, flag_reactiva).enviar_correo()
     
     def load_multiproducto_agencias(self):
         df_1 = pd.read_excel(f'{self.folder_path}/agencias/RJ.xlsx', dtype={'CC': str, 'CONTRATO': str})
@@ -345,7 +330,33 @@ class Instruccion_Pagos():
         print('--------------------------------------------')
         print('No Enviados:', df_no_enviados_final.shape)
     
+    def format_file(self, dict_files: dict[str, str]):
+        for file, validator in dict_files.items():
+            format_excel(file, validator)
+    
+    def open_file(self, file: str | list[str]):
+        start_file(file)
+    
+    def send_email(self):
+        if self.reactiva_count == 0:
+            flag_reactiva = False
+        else:
+            flag_reactiva = True
+        
+        CorreoMultiproducto(self.fecha, self.folder_path, self.hora, flag_reactiva).enviar_correo()
+    
+    def load_bases(self):
+        print('Cargando bases...')
+        self.load_base_pagos()
+        self.load_base_asignacion()
+        self.load_backups()
+        print('Bases cargadas.')
+    
     def subproccess_1(self):
+        if self.df_base is None or self.df_asignacion is None:
+            self.load_bases()
+        
+        self.merge_dataframes()
         self.load_no_encontrados()
         self.load_monoproducto()
         self.load_monoproducto_reactiva()
@@ -355,7 +366,7 @@ class Instruccion_Pagos():
         self.load_no_enviados()
         self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
         self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
-        
+    
     def subproccess_2(self):
         self.load_multiproducto_agencias()
         self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})

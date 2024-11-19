@@ -16,11 +16,13 @@ class ContentArea:
             alignment=ft.alignment.center,
         )
     
-    def update_content(self, new_text):
+    def update_content(self, new_content=None):
         """Actualiza el contenido del área dinámica."""
-        self.container.content = ft.Text(
-            new_text,
-            size=AppConfig.TEXT_STYLES["title"]["size"],
-            weight=AppConfig.FONT_FAMILY["bold"],
-            color=AppConfig.COLORS["bbva_medium_blue"],
-        )
+        if new_content is None:
+            new_content = ft.Text(
+                "Bienvenido al inicio",
+                size=AppConfig.TEXT_STYLES["title"]["size"],
+                weight=AppConfig.FONT_FAMILY["bold"],
+                color=AppConfig.COLORS["bbva_medium_blue"],
+            )
+        self.container.content = new_content
