@@ -110,4 +110,5 @@ class AppConfig:
         "angry": "src/images/angry.png",
         "back": "src/images/back.png",
         "next": "src/images/next.png",
+        "firma": "src/images/firma_bbva.gif",
     }

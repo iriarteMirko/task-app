@@ -1,40 +1,76 @@
-import imaplib
-import email
-from email.header import decode_header
-import datetime
+import smtplib
+from jinja2 import Environment, FileSystemLoader
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email import encoders
+from src.config import AppConfig
+import os
 
-# Conectar a la cuenta de Gmail
-username = "tu_correo@gmail.com"
-password = "tu_contraseña"
-mail = imaplib.IMAP4_SSL("imap.gmail.com")
-mail.login(username, password)
 
-# Seleccionar la bandeja de entrada
-mail.select("inbox")
-
-# Buscar correos por fecha
-date = (datetime.date.today() - datetime.timedelta(1)).strftime("%d-%b-%Y")
-result, data = mail.search(None, f'(SENTSINCE {date})')
-
-# Buscar correos por asunto
-# result, data = mail.search(None, '(SUBJECT "asunto")')
-
-# Obtener los IDs de los correos
-email_ids = data[0].split()
-
-# Procesar cada correo
-for email_id in email_ids:
-    result, msg_data = mail.fetch(email_id, "(RFC822)")
-    raw_email = msg_data[0][1]
-    msg = email.message_from_bytes(raw_email)
+class GmailSender:
+    def __init__(self, sender_email: str, password: str):
+        self.sender_email = sender_email
+        self.password = password
+        self.smtp_server = 'smtp.gmail.com'
+        self.smtp_port = 587
+        self.env = Environment(loader=FileSystemLoader('templates'))
     
-    # Decodificar el asunto
-    subject, encoding = decode_header(msg["Subject"])[0]
-    if isinstance(subject, bytes):
-        subject = subject.decode(encoding if encoding else "utf-8")
-    
-    # Imprimir el asunto del correo
-    print("Asunto:", subject)
-
-# Cerrar la conexión
-mail.logout()
+    def send_email(self, recipient_emails: list, subject: str, body: dict, cc_emails: list = None, files: list = None):
+        """ Envía un correo electrónico a los destinatarios especificados. """
+        
+        msg = MIMEMultipart() # Mensaje
+        
+        msg['From'] = self.sender_email # Remitente
+        msg['To'] = ', '.join(recipient_emails) # Destinatarios
+        msg['Subject'] = subject # Asunto
+        
+        # Destinararios en copia
+        if cc_emails:
+            msg['CC'] = ', '.join(cc_emails)
+        
+        # Cuerpo del correo
+        template = self.env.get_template('email_body.html')
+        body_html = template.render(body)
+        
+        msg_alternative = MIMEMultipart('alternative')
+        msg.attach(msg_alternative)
+        
+        msg_text = MIMEText(body_html, 'html')
+        msg_alternative.attach(msg_text)
+        
+        # Firma
+        try:
+            with open(AppConfig.ICONS["firma"], 'rb') as img:
+                msg_image = MIMEImage(img.read())
+                msg_image.add_header('Content-ID', '<signature_image>')
+                msg.attach(msg_image)
+        except Exception as e:
+            print(f'Error adjuntando la imagen de firma: {str(e)}')
+        
+        # Archivos adjuntos
+        if files:
+            for file in files:
+                try:
+                    with open(file, 'rb') as attachment:
+                        part = MIMEBase('application', 'octet-stream')
+                        part.set_payload(attachment.read())
+                    encoders.encode_base64(part)
+                    part.add_header('Content-Disposition', f'attachment; filename={os.path.basename(file)}')
+                    msg.attach(part)
+                except Exception as e:
+                    print(f'Error adjuntando el archivo {file}: {str(e)}')
+        
+        # Enviar correo
+        try:
+            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+            server.starttls()
+            server.login(self.sender_email, self.password)
+            all_recipients = recipient_emails + (cc_emails if cc_emails else [])
+            server.sendmail(self.sender_email, all_recipients, msg.as_string())
+            print('Correo enviado exitosamente.')
+        except Exception as e:
+            print(f'Error al enviar el correo: {str(e)}')
+        finally:
+            server.quit()

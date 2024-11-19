@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Gmail</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; font-size: 1.5; color: #333;">
+        <!-- Cuerpo -->
+        {% if body_msg == "Multiproducto"%}
+            {% include "multiproducto.html" %}
+        {% else %}
+            <p>{{ body_msg }}</p>
+        {% endif %}
+        <!-- Firma -->
+        {% if firma == "Mirko"%}
+            {% include "firma_mirko.html" %}
+        {% endif %}
+    </body>
+</html>
