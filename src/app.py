@@ -17,7 +17,7 @@ class TaskApp:
     
     def build_ui(self):
         """Construye la interfaz principal."""
-        self.page.appbar = create_appbar(self.page)
+        self.page.appbar = create_appbar(self.page, self.content_area)
         self.page.add(
             ft.Row(
                 [

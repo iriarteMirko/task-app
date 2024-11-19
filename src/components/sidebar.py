@@ -15,15 +15,15 @@ def create_sidebar(on_select):
             unselected_label_text_style=ft.TextStyle(color=AppConfig.COLORS["bbva_medium_blue"],size=12, font_family=AppConfig.FONT_FAMILY["regular"]),
             destinations=[
                 ft.NavigationRailDestination(
-                    icon_content=ft.Image(src=AppConfig.ICONS["home"], width=20, fit=ft.ImageFit.CONTAIN,),
+                    icon_content=ft.Image(src=AppConfig.ICONS["home"], width=20, fit=ft.ImageFit.CONTAIN),
                     label="Inicio",
                 ),
                 ft.NavigationRailDestination(
-                    icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN,),
+                    icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN),
                     label="Proceso 1",
                 ),
                 ft.NavigationRailDestination(
-                    icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN,),
+                    icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN),
                     label="Proceso 2",
                 ),
             ],
