@@ -1,6 +1,6 @@
 import flet as ft
 from src.config import AppConfig
-from src.components.content import ContentArea
+from src.components.app.content import ContentArea
 
 
 class Configuration:

@@ -1,8 +1,8 @@
 import flet as ft
 from src.config import AppConfig
-from src.components.appbar import create_appbar
-from src.components.sidebar import create_sidebar
-from src.components.content import ContentArea
+from src.components.app.appbar import create_appbar
+from src.components.app.sidebar import create_sidebar
+from src.components.app.content import ContentArea
 
 
 class TaskApp:

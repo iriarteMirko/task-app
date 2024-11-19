@@ -1,8 +1,8 @@
 import flet as ft
 from src.config import AppConfig
-from src.components.profile import Profile
-from src.components.configuration import Configuration
-from src.components.exit import Exit
+from src.components.app.profile import Profile
+from src.components.app.configuration import Configuration
+from src.components.app.exit import Exit
 
 
 def create_appbar(content_area):
