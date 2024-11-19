@@ -18,6 +18,7 @@ class Exit:
         # Crear el cuadro de diálogo
         self.page.dialog = ft.AlertDialog(
             modal=True,
+            shape=ft.RoundedRectangleBorder(radius=0),
             title=ft.Container(
                 content=ft.Row(
                     controls=[

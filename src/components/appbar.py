@@ -14,6 +14,7 @@ def create_appbar(content_area):
                 ft.Container(expand=True),
                 ft.PopupMenuButton(
                     menu_position=ft.PopupMenuPosition.UNDER,
+                    shape=ft.RoundedRectangleBorder(radius=0),
                     content=ft.Image(src=AppConfig.ICONS["menu"], width=30, fit=ft.ImageFit.CONTAIN),
                     items=[
                         ft.PopupMenuItem(
