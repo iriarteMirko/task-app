@@ -56,9 +56,9 @@ class AppConfig:
     ICONS = {
         "bbva_icon32": "src/images/bbva-icon32.png",
         "bbva_icon256": "src/images/bbva-icon256.png",
-        "bbva_light": "src/images/bbva-light.png",
-        "bbva_dark": "src/images/bbva-dark.png",
+        "bbva_blue": "src/images/bbva-blue.png",
         "bbva_white": "src/images/bbva-white.png",
+        "bbva_white_2": "src/images/bbva-white-2.png",
         "bbva_black": "src/images/bbva-black.png",
         "on_off": "src/images/on-off.png",
         "point": "src/images/puntos.png",
