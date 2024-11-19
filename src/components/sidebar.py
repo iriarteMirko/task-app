@@ -29,4 +29,5 @@ def create_sidebar(on_select):
             ],
             on_change=on_select,
         ),
+        margin=ft.margin.only(right=-10),
     )

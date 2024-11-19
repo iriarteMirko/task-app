@@ -17,13 +17,10 @@ class TaskApp:
     
     def build_ui(self):
         """Construye la interfaz principal."""
-        self.page.appbar = create_appbar(self.page, self.content_area)
+        self.page.appbar = create_appbar(self.content_area)
         self.page.add(
             ft.Row(
-                [
-                    create_sidebar(self.sidebar_changed),
-                    self.content_area.container,
-                ],
+                [create_sidebar(self.sidebar_changed), self.content_area.container],
                 expand=True,
             )
         )

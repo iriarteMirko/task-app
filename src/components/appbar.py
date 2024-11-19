@@ -2,18 +2,14 @@ import flet as ft
 from src.config import AppConfig
 from src.components.profile import Profile
 from src.components.configuration import Configuration
-from src.components.destroy import Destroy
+from src.components.exit import Exit
 
 
-def create_appbar(page: ft.Page, content_area):
+def create_appbar(content_area):
     """Crea la barra superior con un menú desplegable y altura personalizada."""
     return ft.Container(
-        height=100,
-        padding=ft.padding.only(left=20, right=20),
-        margin=ft.margin.only(bottom=-10),
-        bgcolor=AppConfig.COLORS["bbva_navy"],
-        content=ft.Row(
-            controls=[
+        content = ft.Row(
+            controls = [
                 ft.Image(src=AppConfig.ICONS["bbva_white"], width=150, fit=ft.ImageFit.CONTAIN),
                 ft.Container(expand=True),
                 ft.PopupMenuButton(
@@ -29,24 +25,28 @@ def create_appbar(page: ft.Page, content_area):
                             on_click=lambda e: Configuration(content_area).load_configuration(),
                         ),
                         ft.PopupMenuItem(
-                            content=create_menu_item(AppConfig.ICONS["on_off"], "On/Off"),
-                            on_click=lambda e: Destroy(content_area).load_destroy(),
+                            content=create_menu_item(AppConfig.ICONS["on_off"], "Salir"),
+                            on_click=lambda e: Exit(content_area.container.page).destroy_app(),
                         ),
                     ],
                 ),
             ],
-            alignment="center",
-            vertical_alignment="center",
+            alignment = "center",
+            vertical_alignment = "center",
         ),
+        height = 100,
+        bgcolor = AppConfig.COLORS["bbva_navy"],
+        padding = ft.padding.only(left=20, right=20),
+        margin = ft.margin.only(bottom=-10),
     )
 
 def create_menu_item(icon_src: str, text: str):
     """Crea un elemento de menú con ícono y texto."""
     return ft.Row(
-        controls=[
+        controls = [
             ft.Image(src=icon_src, width=20, fit=ft.ImageFit.CONTAIN),
             ft.Text(text, size=14, color=AppConfig.COLORS["bbva_medium_blue"]),
         ],
-        alignment="start",  # Alinea el ícono y el texto a la izquierda
-        spacing=10,  # Espaciado entre ícono y texto
+        alignment="start",
+        spacing=10,
     )
