@@ -104,8 +104,8 @@ class TaskPagos():
         self.df_base_backup.rename(columns={'TIPO_CARTERA_FINAL': 'TIPO_CARTERA'}, inplace=True)
         self.df_base_backup.drop_duplicates(subset=['CC', 'IMPORTE', 'MONEDA', 'NOMBRE'], keep='first', inplace=True)
         
-        self.df_base_backup['TIPO_CARTERA'] = self.df_base_backup['TIPO_CARTERA'].fillna('NULL')
-        self.df_base_backup['TIPO_FONDO'] = self.df_base_backup['TIPO_FONDO'].fillna('NULL')
+        self.df_base_backup['TIPO_CARTERA'].fillna('NULL', inplace=True)
+        self.df_base_backup['TIPO_FONDO'].fillna('NULL', inplace=True)
         
         self.df_base_backup['FLAG'] = self.df_base_backup['FLAG'].astype('Int64')
         self.df_base_backup['CONTRATO'] = self.df_base_backup['CONTRATO'].apply(lambda x: str(int(x)).zfill(18) if pd.notna(x) else x)
@@ -234,28 +234,27 @@ class TaskPagos():
         print('Multiproducto Agencias:', df_agencias.shape[0])
         print('--------------------------------------------------------------------------------------------------------------------------------------------')
         
-        df_multi_final = pd.concat([df_multi, df_agencias])
-        
-        df_multi_final['CC'] = df_multi_final['CC'].astype(str).replace(' ', '').astype('Int64').astype(str).str.zfill(8)
-        df_multi_final.drop(columns=['TIPO_FONDO', 'CARTERA'], inplace=True)
-        df_multi_final.sort_values(by=['CC', 'CONTRATO'], inplace=True)
-        df_multi_final.drop_duplicates(subset=['CC', 'IMPORTE', 'MONEDA', 'NOMBRE'], keep='first', inplace=True)
-        df_multi_final.reset_index(drop=True, inplace=True)
+        df_multi_contact = pd.concat([df_multi, df_agencias])
+        df_multi_contact['CC'] = df_multi_contact['CC'].astype(str).replace(' ', '').astype('Int64').astype(str).str.zfill(8)
+        df_multi_contact.drop(columns=['TIPO_FONDO', 'CARTERA'], inplace=True)
+        df_multi_contact.sort_values(by=['CC', 'CONTRATO'], inplace=True)
+        df_multi_contact.drop_duplicates(subset=['CC', 'IMPORTE', 'MONEDA', 'NOMBRE'], keep='first', inplace=True)
+        df_multi_contact.reset_index(drop=True, inplace=True)
         
         self.df_asignacion_backup['CC'] = self.df_asignacion_backup['CC'].astype('Int64').astype(str).str.zfill(8)
         self.df_asignacion_backup['CONTRATO'] = self.df_asignacion_backup['CONTRATO'].apply(lambda x: str(int(x)).replace(' ', '').zfill(18) if pd.notna(x) else x)
         
-        df_multi_final = df_multi_final.merge(self.df_asignacion_backup, on='CONTRATO', how='left')
+        df_multi_final = df_multi_contact.merge(self.df_asignacion_backup, on='CONTRATO', how='left')
         df_multi_final.rename(columns={'CC_x': 'CC'}, inplace=True)
         df_multi_final.drop(columns=['CC_y'], inplace=True)
         
         df_multi_final['CLAVSERV'] = df_multi_final['CLAVSERV'].astype(str).str.zfill(4)
         df_multi_final['CENTROPAGO'] = df_multi_final['CENTROPAGO'].astype(str).str.zfill(4)
-        df_multi_final['CONTRATO'] = df_multi_final['CONTRATO'].fillna('NULL')
-        df_multi_final['TIPO_FONDO'] = df_multi_final['TIPO_FONDO'].fillna('NULL')
-        df_multi_final['CARTERA'] = df_multi_final['CARTERA'].fillna('NULL')
-        df_multi_final['TIPO_CARTERA'] = df_multi_final['TIPO_CARTERA'].fillna('NULL')
-        df_multi_final['AGENCIA_y'] = df_multi_final['AGENCIA_y'].fillna('NULL')
+        df_multi_final['CONTRATO'].fillna('NULL', inplace=True)
+        df_multi_final['TIPO_FONDO'].fillna('NULL', inplace=True)
+        df_multi_final['CARTERA'].fillna('NULL', inplace=True)
+        df_multi_final['TIPO_CARTERA'].fillna('NULL', inplace=True)
+        df_multi_final['AGENCIA_y'].fillna('NULL', inplace=True)
         
         df_multi_final['AGENCIA_y'] = df_multi_final.apply(
             lambda x: x['AGENCIA_y'] 
@@ -291,12 +290,12 @@ class TaskPagos():
         
         #Total No Enviados
         df_no_enviados_final = pd.concat([self.df_no_enviados, df_no_enviados_multi])
-        df_no_enviados_final['CONTRATO'] = df_no_enviados_final['CONTRATO'].fillna('NULL')
-        df_no_enviados_final['TIPO_FONDO'] = df_no_enviados_final['TIPO_FONDO'].fillna('NULL')
-        df_no_enviados_final['CARTERA'] = df_no_enviados_final['CARTERA'].fillna('NULL')
-        df_no_enviados_final['TIPO_CARTERA'] = df_no_enviados_final['TIPO_CARTERA'].fillna('NULL')
-        df_no_enviados_final['NOMBRE_CLIENTE'] = df_no_enviados_final['NOMBRE_CLIENTE'].fillna('NULL')
-        df_no_enviados_final['AGENCIA'] = df_no_enviados_final['AGENCIA'].fillna('NULL')
+        df_no_enviados_final['CONTRATO'].fillna('NULL', inplace=True)
+        df_no_enviados_final['TIPO_FONDO'].fillna('NULL', inplace=True)
+        df_no_enviados_final['CARTERA'].fillna('NULL', inplace=True)
+        df_no_enviados_final['TIPO_CARTERA'].fillna('NULL', inplace=True)
+        df_no_enviados_final['NOMBRE_CLIENTE'].fillna('NULL', inplace=True)
+        df_no_enviados_final['AGENCIA'].fillna('NULL', inplace=True)
         df_no_enviados_final['CLAVSERV'] = df_no_enviados_final['CLAVSERV'].apply(lambda x: str(int(x)).replace(' ', '').zfill(4))
         df_no_enviados_final.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
         df_no_enviados_final.reset_index(drop=True, inplace=True)
