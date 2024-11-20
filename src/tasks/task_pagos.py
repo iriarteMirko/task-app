@@ -22,6 +22,9 @@ class TaskPagos():
         self.last_date = get_last_date_pagos(f'input/pagos/{self.fecha}')
         self.folder_path = get_or_create_folder(f'output/pagos/{self.fecha}', pagos=True)
         self.hora = get_hour_am_pm()
+        print(self.last_date)
+        print(self.folder_path)
+        print(self.hora)
         
         self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'
         self.asignacion_path = f'input/asignacion/{self.fecha}/base_asignacion_{self.mes_año}.xlsx'
@@ -134,6 +137,12 @@ class TaskPagos():
         self.df_mono_final.reset_index(drop=True, inplace=True)
         self.df_mono_final.to_excel(self.monoproducto, index=False)
         self.mono_count = self.df_mono_final.shape[0]
+        
+        print('\n-------------------------------------------- PASO 1 --------------------------------------------')
+        print('Base Bagos: ', self.df_base.shape)
+        print('--------------------------------------------')
+        print('Monoproducto:', self.df_mono_final.shape)
+        print('Importe Monoproducto:', round(self.df_mono_final['IMPORTE'].sum(), 2),'\n')
     
     def load_monoproducto_reactiva(self):
         self.df_reactiva = self.df_mono[
@@ -309,18 +318,18 @@ class TaskPagos():
         df_reactiva_final.to_excel(self.reactiva, index=False)
         
         # Total Enviados
-        df_enviados = pd.concat([self.df_mono, df_multi_final])
+        df_enviados = pd.concat([self.df_mono_final, df_multi_final])
         df_enviados['CLAVSERV'] = df_enviados['CLAVSERV'].apply(lambda x: str(int(x)).zfill(4))
         df_enviados['CENTROPAGO'] = df_enviados['CENTROPAGO'].apply(lambda x: str(int(x)).zfill(4))
         df_enviados.sort_values(by=['FECHA', 'FLAG', 'CC'], inplace=True)
         df_enviados.reset_index(drop=True, inplace=True)
         df_enviados.to_excel(self.enviados, index=False)
         
-        print('-------------------------------------------- REPORTE FINAL --------------------------------------------')
+        print('\n-------------------------------------------- REPORTE FINAL --------------------------------------------')
         print('Base Bagos: ', self.df_base.shape)
         print('--------------------------------------------')
-        print('Monoproducto:', self.df_mono.shape)
-        print('Importe Monoproducto:', round(self.df_mono['IMPORTE'].sum(), 2))
+        print('Monoproducto:', self.df_mono_final.shape)
+        print('Importe Monoproducto:', round(self.df_mono_final['IMPORTE'].sum(), 2))
         print('--------------------------------------------')
         print('Multiproducto:', df_multi_final.shape)
         print('Importe Multiproducto:', round(df_multi_final['IMPORTE'].sum(), 2))
@@ -328,7 +337,7 @@ class TaskPagos():
         print('Reactiva:', df_reactiva_final.shape)
         print('Importe Reactiva:', round(df_reactiva_final['IMPORTE'].sum(), 2))
         print('--------------------------------------------')
-        print('No Enviados:', df_no_enviados_final.shape)
+        print('No Enviados:', df_no_enviados_final.shape, '\n')
     
     def format_file(self, dict_files: dict[str, str]):
         for file, validator in dict_files.items():
@@ -343,13 +352,14 @@ class TaskPagos():
         else:
             flag_reactiva = True
         
-        CorreoMultiproducto(self.fecha, self.folder_path, self.hora, flag_reactiva).enviar_correo()
+        CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
     
     def load_bases(self):
         print('Cargando bases...')
         self.load_base_pagos()
+        print('Base de pagos cargada.')
         self.load_base_asignacion()
-        print('Bases cargadas.')
+        print('Base de asignación cargada.')
     
     def subproccess_1(self):
         self.load_backups()

@@ -22,10 +22,10 @@ class CorreoMultiproducto:
             'hora': self.hora_formateada,
             'firma': 'Mirko',
         }
-        files = [f'{self.file_path}/MULTIPRODUCTO {self.fecha}.xlsx', ]
+        files = [f'{self.file_path}/MULTIPRODUCTO_{self.fecha}.xlsx', ]
         
         if self.flag_reactiva:
-            files.append(f'{self.file_path}/REACTIVA {self.fecha}.xlsx')
+            files.append(f'{self.file_path}/REACTIVA_{self.fecha}.xlsx')
             
         print('Archivos adjuntos:', files)
         

@@ -23,7 +23,7 @@ class ContentArea:
                 "Sin contenido",
                 size=AppConfig.TEXT_STYLES["title"]["size"],
                 weight=AppConfig.TEXT_STYLES["title"]["weight"],
-                color=AppConfig.COLORS["bbva_medium_blue"],
+                #color=AppConfig.COLORS["bbva_medium_blue"],
             )
         self.container.content = new_content
         self.container.update()

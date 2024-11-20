@@ -15,7 +15,7 @@ class GmailSender:
         self.password = password
         self.smtp_server = 'smtp.gmail.com'
         self.smtp_port = 587
-        self.env = Environment(loader=FileSystemLoader('templates'))
+        self.env = Environment(loader=FileSystemLoader('src/templates'))
     
     def send_email(self, recipient_emails: list, subject: str, body: dict, cc_emails: list = None, files: list = None):
         """ Envía un correo electrónico a los destinatarios especificados. """
