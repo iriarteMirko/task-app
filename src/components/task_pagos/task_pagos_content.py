@@ -17,8 +17,5 @@ class ContentTaskPagos(ft.Container):
                 self.separator,
                 self.buttons,
             ],
-            alignment = ft.alignment.top_left,
             spacing = 20,
         )
-        self.padding = ft.padding.all(20)
-        self.expand = True

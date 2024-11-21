@@ -15,32 +15,30 @@ class Configuration:
                 ),
                 ft.dropdown.Option(
                     key = "Oscuro",
-                    content = row_image_text("theme_dark", "Oscuro", "bbva_medium_blue", "body"),
+                    content = row_image_text("Oscuro", "theme_dark", "bbva_medium_blue", "body"),
                 ),
             ],
             value = "Claro" if content_area.container.page.theme_mode == "light" else "Oscuro",
             on_change = self.change_theme,
             width = 250,
         )
-        self.container = ft.Container(
+        self.content = ft.Container(
             content = ft.Column(
                 controls = [
                     ft.Container(
                         content = self.title,
                         alignment = ft.alignment.top_left,
-                        padding = ft.padding.only(left=20, right=20, top=20, bottom=10),
+                        padding = ft.padding.only(right=20, bottom=10),
                     ),
                     ft.Container(
                         content = self.dropdown,
                         alignment = ft.alignment.top_left,
-                        padding = ft.padding.only(left=20, right=20, top=10, bottom=20),
+                        padding = ft.padding.only(right=20, bottom=10),
                         width = 250,
                     ),
                 ],
                 alignment = ft.alignment.top_left,
             ),
-            expand = True,
-            alignment = ft.alignment.top_left,
         )
     
     def change_theme(self, e):
@@ -54,5 +52,5 @@ class Configuration:
     
     def load_configuration(self):
         """Carga el contenido de la sección 'Configuración' en el área dinámica."""
-        self.content_area.container.content = self.container
+        self.content_area.container.content = self.content
         self.content_area.container.update()

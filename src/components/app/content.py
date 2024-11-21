@@ -1,28 +1,20 @@
 import flet as ft
 from src.config import AppConfig
+from src.components.components import title
 
 
 class ContentArea:
     def __init__(self):
         self.container = ft.Container(
-            content = ft.Text(
-                "Bienvenido al inicio",
-                size = AppConfig.TEXT_STYLES["title"]["size"],
-                weight = AppConfig.TEXT_STYLES["title"]["weight"],
-                color = AppConfig.COLORS["bbva_medium_blue"],
-            ),
-            alignment = ft.alignment.center,
+            content = title("Bienvenido"),
+            padding = ft.padding.all(20),
+            alignment = ft.alignment.top_left,
             expand = True,
         )
     
     def update_content(self, new_content=None):
         """Actualiza el contenido del área dinámica."""
         if new_content is None:
-            new_content = ft.Text(
-                "Sin contenido",
-                size = AppConfig.TEXT_STYLES["title"]["size"],
-                weight = AppConfig.TEXT_STYLES["title"]["weight"],
-                color = AppConfig.COLORS["bbva_medium_blue"],
-            )
+            new_content = title("Sin contenido")
         self.container.content = new_content
         self.container.update()

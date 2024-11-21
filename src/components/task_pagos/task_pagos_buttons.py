@@ -20,9 +20,8 @@ def create_task_buttons(task_pagos: TaskPagos):
         [
             button("Cargar Bases", on_load_bases_click),
             button("Paso 1", on_subproccess_1_click),
-            button("Enviar Email", on_send_email_click),
+            button("Enviar Correo", on_send_email_click),
             button("Paso 2", on_subproccess_2_click),
         ],
-        alignment = ft.MainAxisAlignment.CENTER,
         spacing = 10,
     )

@@ -2,13 +2,13 @@ import flet as ft
 from src.config import AppConfig
 
 
-def text(text: str, style: str, color: str) -> ft.Text:
+def text(text: str, color: str, style: str) -> ft.Text:
     return ft.Text(
         value = text, 
+        color = AppConfig.COLORS[color], 
         size = AppConfig.TEXT_STYLES[style]["size"],
         weight = AppConfig.TEXT_STYLES[style]["weight"], 
         font_family = AppConfig.TEXT_STYLES[style]["font_family"],
-        color = AppConfig.COLORS[color]
     )
 
 def image(image_src: str, width: int = 20) -> ft.Image:
@@ -22,7 +22,7 @@ def row_image_text(text_: str, image_src: str, color: str, style: str) -> ft.Row
     return ft.Row(
         controls = [
             image(image_src), 
-            text(text_, style, color)
+            text(text_, color, style)
         ], 
         alignment = "start",
         spacing = 10
@@ -38,7 +38,7 @@ def subtitle(text: str) -> ft.Container:
         content=row_image_text("bullet_subtitle", text, "subtitle", "bbva_medium_blue"),
     )
 
-def button(text: str, on_click: callable) -> ft.ElevatedButton:
+def button(text: str|ft.Row, on_click: callable) -> ft.ElevatedButton:
     return ft.ElevatedButton(
         text = text,
         on_click = lambda e: on_click(e),

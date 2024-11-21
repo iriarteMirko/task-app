@@ -20,9 +20,9 @@ class Exit:
             modal = True,
             shape = ft.RoundedRectangleBorder(radius=0),
             title = ft.Container(
-                content = row_image_text("Confirmación", "warning", "subtitle", "bbva_medium_blue"),
+                content = row_image_text("Confirmación", "warning", "bbva_medium_blue", "subtitle"),
             ),
-            content = text("¿Está seguro de que desea cerrar la aplicación?", "body", "bbva_dark_gray"),
+            content = text("¿Está seguro de que desea cerrar la aplicación?", "bbva_dark_gray", "body"),
             actions = [
                 ft.Row(
                     controls=[
