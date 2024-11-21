@@ -346,14 +346,6 @@ class TaskPagos():
     def open_file(self, file: str | list[str]):
         start_file(file)
     
-    def send_email(self):
-        #if self.reactiva_count == 0:
-        #    flag_reactiva = False
-        #else:
-        #    flag_reactiva = True
-        #CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
-        print('Correo enviado.')
-    
     def get_bases(self):
         print('Cargando bases...')
         #self.get_base_pagos()
@@ -374,9 +366,17 @@ class TaskPagos():
         #self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
         #self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
         print('Paso 1 completado.')
-
+    
+    def send_email(self):
+        #if self.reactiva_count == 0:
+        #    flag_reactiva = False
+        #else:
+        #    flag_reactiva = True
+        #CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
+        print('Correo enviado.')
+    
     def execute_step_2(self):
         #self.get_multiproducto_agencias()
         #self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})
         #self.open_file([self.multi_path, self.reactiva_path, self.no_enviados_path, self.enviados_path])
-        print('Paso 1 completado.')
+        print('Paso 2 completado.')

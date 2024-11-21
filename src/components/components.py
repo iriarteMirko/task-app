@@ -18,7 +18,7 @@ def image(image_src: str, width: int = 20) -> ft.Image:
         width = width
     )
 
-def row_image_text(text_: str, image_src: str, color: str, style: str, alignment: str|ft.Alignment = "start") -> ft.Row:
+def row_image_text(text_: str, image_src: str, color: str|None = None, style: str = "body", alignment: str|ft.Alignment = "start") -> ft.Row:
     return ft.Row(
         controls = [
             image(image_src), 

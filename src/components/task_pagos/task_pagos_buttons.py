@@ -4,7 +4,6 @@ from src.components.components import button, text, image
 
 
 def create_task_buttons(task_pagos: TaskPagos):
-    # Estados dinámicos para las casillas
     get_bases_status = ft.Container(content=image("more"))
     step_1_status = ft.Container(content=image("more"))
     send_email_status = ft.Container(content=image("more"))
@@ -33,21 +32,21 @@ def create_task_buttons(task_pagos: TaskPagos):
     return ft.Column(
         [
             ft.Row(
-                controls=[
+                controls = [
                     button("Cargar Bases", on_get_bases_click),
                     get_bases_status,
                 ],
-                spacing=10,
+                spacing = 10,
             ),
             ft.Row(
-                controls=[
+                controls = [
                     button("Paso 1", on_step_1_click),
                     step_1_status,
                 ],
-                spacing=10,
+                spacing = 10,
             ),
             ft.Row(
-                controls=[
+                controls = [
                     ft.Container(
                         content=ft.Row(
                             controls=[
@@ -58,10 +57,10 @@ def create_task_buttons(task_pagos: TaskPagos):
                             alignment="center",
                             spacing=10,
                         ),
-                        width=250,
-                        height=35,
-                        padding=ft.padding.symmetric(horizontal=10),
-                        border_radius=ft.border_radius.all(0),
+                        width = 250,
+                        height = 35,
+                        padding = ft.padding.symmetric(horizontal=10),
+                        border_radius = ft.border_radius.all(0),
                     ),
                     send_email_status,
                 ], 
@@ -73,7 +72,7 @@ def create_task_buttons(task_pagos: TaskPagos):
                     button("Paso 2", on_step_2_click),
                     step_2_status,
                 ],
-                spacing=10,
+                spacing = 10,
             ),
         ],
         spacing=20,
