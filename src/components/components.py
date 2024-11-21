@@ -38,17 +38,20 @@ def subtitle(text: str) -> ft.Container:
         content=row_image_text("bullet_subtitle", text, "subtitle", "bbva_medium_blue"),
     )
 
-def button(text: str|ft.Row, on_click: callable) -> ft.ElevatedButton:
+def button(content: str|ft.Row, on_click: callable) -> ft.ElevatedButton:
     return ft.ElevatedButton(
-        text = text,
+        content = content if isinstance(content, ft.Row) else ft.Text(content),
         on_click = lambda e: on_click(e),
         width = 250,
         height = 35,
         bgcolor = AppConfig.COLORS["bbva_core_light_blue"],
         color = AppConfig.COLORS["bbva_white"],
         style = ft.ButtonStyle(
-            shape = ft.RoundedRectangleBorder(radius=0),
+            shape = ft.RoundedRectangleBorder(radius=0),    
             padding = ft.padding.symmetric(horizontal=10, vertical=10),
+            overlay_color={"hovered": AppConfig.COLORS["bbva_core_blue"]},
+            visual_density = ft.VisualDensity.COMFORTABLE,
+            mouse_cursor = "pointer",
         ),
     )
 

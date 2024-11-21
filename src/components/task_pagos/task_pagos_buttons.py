@@ -1,6 +1,6 @@
 import flet as ft
 from src.tasks.task_pagos import TaskPagos
-from src.components.components import button
+from src.components.components import button, row_image_text
 
 
 def create_task_buttons(task_pagos: TaskPagos):
@@ -19,7 +19,10 @@ def create_task_buttons(task_pagos: TaskPagos):
     return ft.Column(
         [
             button("Cargar Bases", on_load_bases_click),
-            button("Paso 1", on_subproccess_1_click),
+            button(
+                row_image_text("Paso 1", "email", "bbva_white", "body"),
+                on_subproccess_1_click
+            ),
             button("Enviar Correo", on_send_email_click),
             button("Paso 2", on_subproccess_2_click),
         ],
