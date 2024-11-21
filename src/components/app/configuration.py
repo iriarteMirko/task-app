@@ -1,69 +1,47 @@
 import flet as ft
-from src.config import AppConfig
-from src.components.app.content import ContentArea
+from src.components.components import title, row_image_text
 
 
 class Configuration:
-    def __init__(self, content_area: ContentArea):
+    def __init__(self, content_area):
         self.content_area = content_area
-        # Crear el título
-        self.title = ft.Text(
-            "Configuración",
-            size=AppConfig.TEXT_STYLES["title"]["size"],
-            weight=AppConfig.TEXT_STYLES["title"]["weight"],
-            color=AppConfig.COLORS["bbva_medium_blue"],
-        )
-        # Crear el Dropdown con opciones personalizadas
+        self.title = title("Configuración")
         self.dropdown = ft.Dropdown(
-            label="Seleccionar el tema",
-            options=[
+            label = "Seleccionar el tema",
+            options = [
                 ft.dropdown.Option(
-                    key="Claro",
-                    content=ft.Row(
-                        controls=[
-                            ft.Image(src=AppConfig.ICONS["theme_light"], width=20, fit=ft.ImageFit.CONTAIN),
-                            ft.Text("Claro", size=14, color=AppConfig.COLORS["bbva_medium_blue"],),
-                        ],
-                        spacing=10,
-                        alignment="start",
-                    ),
+                    key = "Claro",
+                    content = row_image_text("theme_light", "Claro", "body", "bbva_medium_blue"),
                 ),
                 ft.dropdown.Option(
-                    key="Oscuro",
-                    content=ft.Row(
-                        controls=[
-                            ft.Image(src=AppConfig.ICONS["theme_dark"], width=20, fit=ft.ImageFit.CONTAIN),
-                            ft.Text("Oscuro", size=14, color=AppConfig.COLORS["bbva_medium_blue"]),
-                        ],
-                        spacing=10,
-                        alignment="start",
-                    ),
+                    key = "Oscuro",
+                    content = row_image_text("theme_dark", "Oscuro", "body", "bbva_medium_blue"),
                 ),
             ],
-            value="Claro" if content_area.container.page.theme_mode == "light" else "Oscuro",
-            on_change=self.change_theme,
-            width=250,
+            value = "Claro" if content_area.container.page.theme_mode == "light" else "Oscuro",
+            on_change = self.change_theme,
+            width = 250,
         )
         # Contenedor principal
         self.container = ft.Container(
-            content=ft.Column(
-                controls=[
+            content = ft.Column(
+                controls = [
                     ft.Container(
-                        content=self.title,
-                        alignment=ft.alignment.top_left,
-                        padding=ft.padding.only(left=20, right=20, top=20, bottom=10),
+                        content = self.title,
+                        alignment = ft.alignment.top_left,
+                        padding = ft.padding.only(left=20, right=20, top=20, bottom=10),
                     ),
                     ft.Container(
-                        content=self.dropdown,
-                        alignment=ft.alignment.top_left,
-                        padding=ft.padding.only(left=20, right=20, top=10, bottom=20),
-                        width=250,
+                        content = self.dropdown,
+                        alignment = ft.alignment.top_left,
+                        padding = ft.padding.only(left=20, right=20, top=10, bottom=20),
+                        width = 250,
                     ),
                 ],
-                alignment=ft.alignment.top_left,
+                alignment = ft.alignment.top_left,
             ),
-            expand=True,
-            alignment=ft.alignment.top_left,
+            expand = True,
+            alignment = ft.alignment.top_left,
         )
     
     def change_theme(self, e):

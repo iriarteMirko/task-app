@@ -3,6 +3,7 @@ from src.config import AppConfig
 from src.components.app.profile import Profile
 from src.components.app.configuration import Configuration
 from src.components.app.exit import Exit
+from src.components.components import row_image_text, image
 
 
 def create_appbar(content_area):
@@ -10,24 +11,24 @@ def create_appbar(content_area):
     return ft.Container(
         content = ft.Row(
             controls = [
-                ft.Image(src=AppConfig.ICONS["bbva_tag_white"], width=250, fit=ft.ImageFit.CONTAIN),
+                image("bbva_tag_white", width=250),
                 ft.Container(expand=True),
                 ft.PopupMenuButton(
-                    menu_position=ft.PopupMenuPosition.UNDER,
-                    shape=ft.RoundedRectangleBorder(radius=0),
-                    content=ft.Image(src=AppConfig.ICONS["menu"], width=30, fit=ft.ImageFit.CONTAIN),
-                    items=[
+                    menu_position = ft.PopupMenuPosition.UNDER,
+                    shape = ft.RoundedRectangleBorder(radius=0),
+                    content = image("menu", width=30),
+                    items = [
                         ft.PopupMenuItem(
-                            content=create_menu_item(AppConfig.ICONS["profile"], "Perfil"),
-                            on_click=lambda e: Profile(content_area).load_profile(),
+                            content=row_image_text("profile", "Perfil", "subtitle", "bbva_medium_blue"),
+                            on_click = lambda e: Profile(content_area).load_profile(),
                         ),
                         ft.PopupMenuItem(
-                            content=create_menu_item(AppConfig.ICONS["settings"], "Configuración"),
-                            on_click=lambda e: Configuration(content_area).load_configuration(),
+                            content=row_image_text("settings", "Configuración", "subtitle", "bbva_medium_blue"),
+                            on_click = lambda e: Configuration(content_area).load_configuration(),
                         ),
                         ft.PopupMenuItem(
-                            content=create_menu_item(AppConfig.ICONS["on_off"], "Salir"),
-                            on_click=lambda e: Exit(content_area.container.page).destroy_app(),
+                            content=row_image_text("on_off", "Salir", "subtitle", "bbva_medium_blue"),
+                            on_click = lambda e: Exit(content_area.container.page).destroy_app(),
                         ),
                     ],
                 ),
@@ -39,15 +40,4 @@ def create_appbar(content_area):
         bgcolor = AppConfig.COLORS["bbva_navy"],
         padding = ft.padding.only(left=20, right=20),
         margin = ft.margin.only(bottom=-10),
-    )
-
-def create_menu_item(icon_src: str, text: str):
-    """Crea un elemento de menú con ícono y texto."""
-    return ft.Row(
-        controls = [
-            ft.Image(src=icon_src, width=20, fit=ft.ImageFit.CONTAIN),
-            ft.Text(text, size=14, color=AppConfig.COLORS["bbva_medium_blue"]),
-        ],
-        alignment="start",
-        spacing=10,
     )

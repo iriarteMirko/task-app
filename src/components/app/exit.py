@@ -23,7 +23,7 @@ class Exit:
                 content=ft.Row(
                     controls=[
                         ft.Image(src=AppConfig.ICONS["warning"], width=20, fit=ft.ImageFit.CONTAIN),
-                        ft.Text("Confirmar Cierre", size=20, weight="bold", color=AppConfig.COLORS["bbva_medium_blue"]),
+                        ft.Text("Confirmación", size=20, weight="bold", color=AppConfig.COLORS["bbva_medium_blue"]),
                     ],
                     spacing=10,
                 ),

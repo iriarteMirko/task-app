@@ -1,6 +1,6 @@
 import flet as ft
-from src.config import AppConfig
 from src.tasks.task_pagos import TaskPagos
+from src.components.components import button
 
 
 def create_task_buttons(task_pagos: TaskPagos):
@@ -18,11 +18,11 @@ def create_task_buttons(task_pagos: TaskPagos):
     
     return ft.Column(
         [
-            ft.ElevatedButton("Cargar Bases", on_click=on_load_bases_click ,),
-            ft.ElevatedButton("Ejecutar Paso 1", on_click=on_subproccess_1_click),
-            ft.ElevatedButton("Enviar Correo", on_click=on_send_email_click),
-            ft.ElevatedButton("Ejecutar Paso 2", on_click=on_subproccess_2_click),
+            button("Cargar Bases", on_load_bases_click),
+            button("Paso 1", on_subproccess_1_click),
+            button("Enviar Email", on_send_email_click),
+            button("Paso 2", on_subproccess_2_click),
         ],
-        alignment=ft.MainAxisAlignment.CENTER,
-        spacing=10,
+        alignment = ft.MainAxisAlignment.CENTER,
+        spacing = 10,
     )

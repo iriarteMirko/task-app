@@ -21,35 +21,23 @@ class AppConfig:
     }
     
     FONTS = {
-        "Lato-Regular": "src/fonts/Lato-Regular.ttf",
-        "Lato-Bold": "src/fonts/Lato-Bold.ttf",
-        "Lato-Italic": "src/fonts/Lato-Italic.ttf",
-        "Lato-Light": "src/fonts/Lato-Light.ttf",
-        "Lato-Thin": "src/fonts/Lato-Thin.ttf",
-        "Lato-Black": "src/fonts/Lato-Black.ttf",
-        "Lato-BoldItalic": "src/fonts/Lato-BoldItalic.ttf",
-        "Lato-LightItalic": "src/fonts/Lato-LightItalic.ttf",
-        "Lato-ThinItalic": "src/fonts/Lato-ThinItalic.ttf",
-        "Lato-BlackItalic": "src/fonts/Lato-BlackItalic.ttf",
+        "BentonSansBBVA-Light": "src/fonts/BentonSansBBVA-Light.ttf",
+        "BentonSansBBVA-Book": "src/fonts/BentonSansBBVA-Book.ttf",
+        "BentonSansBBVA-Medium": "src/fonts/BentonSansBBVA-Medium.ttf",
+        "BentonSansBBVA-Bold": "src/fonts/BentonSansBBVA-Bold.ttf",
     }
     
     FONT_FAMILY = {
-        "regular": "Lato-Regular",
-        "bold": "Lato-Bold",
-        "italic": "Lato-Italic",
-        "light": "Lato-Light",
-        "thin": "Lato-Thin",
-        "black": "Lato-Black",
-        "bold_italic": "Lato-BoldItalic",
-        "light_italic": "Lato-LightItalic",
-        "thin_italic": "Lato-ThinItalic",
-        "black_italic": "Lato-BlackItalic",
+        "light": "src/fonts/BentonSansBBVA-Light.ttf",
+        "regular": "src/fonts/BentonSansBBVA-Book.ttf",
+        "medium": "src/fonts/BentonSansBBVA-Medium.ttf",
+        "bold": "src/fonts/BentonSansBBVA-Bold.ttf",
     }
     
     TEXT_STYLES = {
         "title": {"size": 24, "weight": "bold", "font_family": FONT_FAMILY["bold"]},
-        "subtitle": {"size": 20, "weight": "semi-bold", "font_family": FONT_FAMILY["regular"]},
-        "body": {"size": 16, "weight": "normal", "font_family": FONT_FAMILY["regular"]},
+        "subtitle": {"size": 20, "weight": "semi-bold", "font_family": FONT_FAMILY["medium"]},
+        "body": {"size": 14, "weight": "normal", "font_family": FONT_FAMILY["regular"]},
         "caption": {"size": 12, "weight": "light", "font_family": FONT_FAMILY["light"]},
     }
     
@@ -72,6 +60,8 @@ class AppConfig:
         "info": "src/images/info.png",
         "warning": "src/images/warning.png",
         "menu": "src/images/menu.png",
+        "bullet_title": "src/images/bullet1.png",
+        "bullet_subtitle": "src/images/bullet2.png",
         "settings": "src/images/settings.png",
         "tools": "src/images/tools.png",
         "run": "src/images/play.png",
