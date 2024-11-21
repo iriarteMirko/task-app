@@ -1,19 +1,20 @@
 import flet as ft
 from src.config import AppConfig
+from src.tasks.task_pagos import TaskPagos
 
 
-def create_task_buttons(task_instance):
+def create_task_buttons(task_pagos: TaskPagos):
     def on_load_bases_click(e):
-        task_instance.load_bases()
+        task_pagos.load_bases()
     
     def on_subproccess_1_click(e):
-        task_instance.subproccess_1()
+        task_pagos.subproccess_1()
     
     def on_send_email_click(e):
-        task_instance.send_email()
+        task_pagos.send_email()
     
     def on_subproccess_2_click(e):
-        task_instance.subproccess_2()
+        task_pagos.subproccess_2()
     
     return ft.Column(
         [

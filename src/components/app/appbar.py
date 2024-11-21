@@ -10,7 +10,7 @@ def create_appbar(content_area):
     return ft.Container(
         content = ft.Row(
             controls = [
-                ft.Image(src=AppConfig.ICONS["bbva_white"], width=150, fit=ft.ImageFit.CONTAIN),
+                ft.Image(src=AppConfig.ICONS["bbva_tag_white"], width=250, fit=ft.ImageFit.CONTAIN),
                 ft.Container(expand=True),
                 ft.PopupMenuButton(
                     menu_position=ft.PopupMenuPosition.UNDER,

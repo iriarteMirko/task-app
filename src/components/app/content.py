@@ -11,7 +11,6 @@ class ContentArea:
                 weight=AppConfig.TEXT_STYLES["title"]["weight"],
                 color=AppConfig.COLORS["bbva_medium_blue"],
             ),
-            #bgcolor=AppConfig.COLORS["bbva_white"],
             alignment=ft.alignment.center,
             expand=True,
         )

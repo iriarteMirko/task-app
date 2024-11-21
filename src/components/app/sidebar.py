@@ -20,11 +20,11 @@ def create_sidebar(on_select):
                 ),
                 ft.NavigationRailDestination(
                     icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN),
-                    label="Instrucción de Pagos",
+                    label="Pagos",
                 ),
                 ft.NavigationRailDestination(
-                    icon_content=ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN),
-                    label="Proceso 2",
+                    icon_content=ft.Image(src=AppConfig.ICONS["graphics"], width=20, fit=ft.ImageFit.CONTAIN),
+                    label="Dashboard",
                 ),
             ],
             on_change=on_select,
