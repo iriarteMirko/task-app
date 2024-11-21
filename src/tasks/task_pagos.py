@@ -348,35 +348,35 @@ class TaskPagos():
     
     def get_bases(self):
         print('Cargando bases...')
-        #self.get_base_pagos()
+        self.get_base_pagos()
         print('Base de pagos cargada.')
-        #self.get_base_asignacion()
+        self.get_base_asignacion()
         print('Base de asignación cargada.')
     
     def execute_step_1(self):
-        #self.get_backups()
-        #self.merge_dataframes()
-        #self.get_no_encontrados()
-        #self.get_monoproducto()
-        #self.get_monoproducto_reactiva()
-        #self.get_monoproducto_no_enviados()
-        #self.get_multiproducto()
-        #self.get_multiproducto_no_enviados()
-        #self.get_no_enviados()
-        #self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
-        #self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
+        self.get_backups()
+        self.merge_dataframes()
+        self.get_no_encontrados()
+        self.get_monoproducto()
+        self.get_monoproducto_reactiva()
+        self.get_monoproducto_no_enviados()
+        self.get_multiproducto()
+        self.get_multiproducto_no_enviados()
+        self.get_no_enviados()
+        self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
+        self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
         print('Paso 1 completado.')
     
     def send_email(self):
-        #if self.reactiva_count == 0:
-        #    flag_reactiva = False
-        #else:
-        #    flag_reactiva = True
-        #CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
+        if self.reactiva_count == 0:
+            flag_reactiva = False
+        else:
+            flag_reactiva = True
+        CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
         print('Correo enviado.')
     
     def execute_step_2(self):
-        #self.get_multiproducto_agencias()
-        #self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})
-        #self.open_file([self.multi_path, self.reactiva_path, self.no_enviados_path, self.enviados_path])
+        self.get_multiproducto_agencias()
+        self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})
+        self.open_file([self.multi_path, self.reactiva_path, self.no_enviados_path, self.enviados_path])
         print('Paso 2 completado.')

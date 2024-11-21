@@ -29,6 +29,7 @@ class TaskApp:
                 expand=True,
             )
         )
+        self.content_area.update_content(self.create_home_content())
     
     def sidebar_changed(self, e):
         """Gestiona el cambio de selección en la barra lateral."""
@@ -43,17 +44,16 @@ class TaskApp:
     def update_all_contents(self, e):
         """Actualiza todas las instancias dinámicas."""
         self.dynamic_contents["task_pagos_content"] = ContentTaskPagos()
-        # Agregar
         self.page.update()
     
     def create_home_content(self):
         """Crea el contenido de la pestaña Inicio con el botón Actualizar."""
         return ft.Column(
-            controls=[
+            controls = [
                 title("Inicio", "home", "bbva_aqua"),
                 separator(),
                 ft.Row(
-                    controls=[
+                    controls = [
                         image("bullet_subtitle"),
                         text("Actualizar"),
                         button(image("update"), self.update_all_contents, width=50, bgcolor=None),
