@@ -1,5 +1,5 @@
 import flet as ft
-from src.config import AppConfig
+from src.components.components import row_image_text, text
 
 
 class Exit:
@@ -17,60 +17,37 @@ class Exit:
         
         # Crear el cuadro de diálogo
         self.page.dialog = ft.AlertDialog(
-            modal=True,
-            shape=ft.RoundedRectangleBorder(radius=0),
-            title=ft.Container(
-                content=ft.Row(
-                    controls=[
-                        ft.Image(src=AppConfig.ICONS["warning"], width=20, fit=ft.ImageFit.CONTAIN),
-                        ft.Text("Confirmación", size=20, weight="bold", color=AppConfig.COLORS["bbva_medium_blue"]),
-                    ],
-                    spacing=10,
-                ),
+            modal = True,
+            shape = ft.RoundedRectangleBorder(radius=0),
+            title = ft.Container(
+                content = row_image_text("Confirmación", "warning", "subtitle", "bbva_medium_blue"),
             ),
-            content=ft.Text(
-                "¿Está seguro de que desea cerrar la aplicación?",
-                size=AppConfig.TEXT_STYLES["body"]["size"],
-                weight=AppConfig.TEXT_STYLES["body"]["weight"],
-                color=AppConfig.COLORS["bbva_dark_gray"],
-            ),
-            actions=[
+            content = text("¿Está seguro de que desea cerrar la aplicación?", "body", "bbva_dark_gray"),
+            actions = [
                 ft.Row(
                     controls=[
                         ft.TextButton(
-                            content=ft.Row(
-                                controls=[
-                                    ft.Image(src=AppConfig.ICONS["right"], width=20, fit=ft.ImageFit.CONTAIN),
-                                    ft.Text("Sí", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
-                                ],
-                                spacing=10,
+                            content = row_image_text("Sí", "right", "bbva_medium_blue", "body"),
+                            style = ft.ButtonStyle(
+                                shape = ft.RoundedRectangleBorder(radius=0),
+                                padding = ft.padding.only(left=20, right=20, top=20, bottom=20),
                             ),
-                            style=ft.ButtonStyle(
-                                shape=ft.RoundedRectangleBorder(radius=0),
-                                padding=ft.padding.only(left=20, right=20, top=20, bottom=20),
-                            ),
-                            on_click=close_app
+                            on_click = close_app
                         ),
                         ft.TextButton(
-                            content=ft.Row(
-                                controls=[
-                                    ft.Image(src=AppConfig.ICONS["wrong"], width=20, fit=ft.ImageFit.CONTAIN),
-                                    ft.Text("No", size=AppConfig.TEXT_STYLES["body"]["size"], color=AppConfig.COLORS["bbva_medium_blue"]),
-                                ],
-                                spacing=10,
+                            content = row_image_text("No", "wrong", "bbva_medium_blue", "body"),
+                            style = ft.ButtonStyle(
+                                shape = ft.RoundedRectangleBorder(radius=0),
+                                padding = ft.padding.only(left=20, right=20, top=20, bottom=20),
                             ),
-                            style=ft.ButtonStyle(
-                                shape=ft.RoundedRectangleBorder(radius=0),
-                                padding=ft.padding.only(left=20, right=20, top=20, bottom=20),
-                            ),
-                            on_click=dismiss_dialog
+                            on_click = dismiss_dialog
                         ),
                     ],
-                    alignment="center",
-                    spacing=20,
+                    alignment = "center",
+                    spacing = 20,
                 )
             ],
-            actions_alignment="center",
+            actions_alignment = "center",
         )
         
         # Abrir el cuadro de diálogo

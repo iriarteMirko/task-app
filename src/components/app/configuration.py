@@ -11,18 +11,17 @@ class Configuration:
             options = [
                 ft.dropdown.Option(
                     key = "Claro",
-                    content = row_image_text("theme_light", "Claro", "body", "bbva_medium_blue"),
+                    content = row_image_text("Claro", "theme_light", "bbva_medium_blue", "body"),
                 ),
                 ft.dropdown.Option(
                     key = "Oscuro",
-                    content = row_image_text("theme_dark", "Oscuro", "body", "bbva_medium_blue"),
+                    content = row_image_text("theme_dark", "Oscuro", "bbva_medium_blue", "body"),
                 ),
             ],
             value = "Claro" if content_area.container.page.theme_mode == "light" else "Oscuro",
             on_change = self.change_theme,
             width = 250,
         )
-        # Contenedor principal
         self.container = ft.Container(
             content = ft.Column(
                 controls = [

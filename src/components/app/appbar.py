@@ -19,15 +19,15 @@ def create_appbar(content_area):
                     content = image("menu", width=30),
                     items = [
                         ft.PopupMenuItem(
-                            content=row_image_text("profile", "Perfil", "subtitle", "bbva_medium_blue"),
+                            content = row_image_text("Perfil", "profile", "bbva_medium_blue", "body"),
                             on_click = lambda e: Profile(content_area).load_profile(),
                         ),
                         ft.PopupMenuItem(
-                            content=row_image_text("settings", "Configuración", "subtitle", "bbva_medium_blue"),
+                            content = row_image_text("Configuración", "settings", "bbva_medium_blue", "body"),
                             on_click = lambda e: Configuration(content_area).load_configuration(),
                         ),
                         ft.PopupMenuItem(
-                            content=row_image_text("on_off", "Salir", "subtitle", "bbva_medium_blue"),
+                            content = row_image_text("Salir", "on_off", "bbva_medium_blue", "body"),
                             on_click = lambda e: Exit(content_area.container.page).destroy_app(),
                         ),
                     ],

@@ -37,8 +37,8 @@ class AppConfig:
     TEXT_STYLES = {
         "title": {"size": 24, "weight": "bold", "font_family": FONT_FAMILY["bold"]},
         "subtitle": {"size": 20, "weight": "semi-bold", "font_family": FONT_FAMILY["medium"]},
-        "body": {"size": 14, "weight": "normal", "font_family": FONT_FAMILY["regular"]},
-        "caption": {"size": 12, "weight": "light", "font_family": FONT_FAMILY["light"]},
+        "body": {"size": 16, "weight": "normal", "font_family": FONT_FAMILY["regular"]},
+        "caption": {"size": 14, "weight": "light", "font_family": FONT_FAMILY["light"]},
     }
     
     ICONS = {

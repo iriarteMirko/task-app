@@ -1,17 +1,12 @@
 import flet as ft
-from src.config import AppConfig
+from src.components.components import title
 
 
 class Profile:
     def __init__(self, content_area):
         self.content_area = content_area
         self.container = ft.Container(
-            content = ft.Text(
-                "Bienvenido al Perfil",
-                size = AppConfig.TEXT_STYLES["title"]["size"],
-                weight = AppConfig.FONT_FAMILY["bold"],
-                color = AppConfig.COLORS["bbva_medium_blue"],
-            ),
+            content = title("Bienvenido a tu perfil"),
         )
     
     def load_profile(self):

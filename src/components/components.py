@@ -1,6 +1,7 @@
 import flet as ft
 from src.config import AppConfig
 
+
 def text(text: str, style: str, color: str) -> ft.Text:
     return ft.Text(
         value = text, 
@@ -17,7 +18,7 @@ def image(image_src: str, width: int = 20) -> ft.Image:
         width = width
     )
 
-def row_image_text(image_src: str, text_: str, style: str, color: str) -> ft.Row:
+def row_image_text(text_: str, image_src: str, color: str, style: str) -> ft.Row:
     return ft.Row(
         controls = [
             image(image_src), 
@@ -27,11 +28,10 @@ def row_image_text(image_src: str, text_: str, style: str, color: str) -> ft.Row
         spacing = 10
     )
 
-def title(text: str) -> ft.Container:
+def title(text: str, imagen_src: str = "bullet_title", color: str = "bbva_aqua") -> ft.Container:
     return ft.Container(
-        content=row_image_text("bullet_title", text, "title", "bbva_aqua"),
+        content = row_image_text(text, imagen_src, color, "title"),
     )
-
 
 def subtitle(text: str) -> ft.Container:
     return ft.Container(
