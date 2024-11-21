@@ -1,30 +1,80 @@
 import flet as ft
 from src.tasks.task_pagos import TaskPagos
-from src.components.components import button, row_image_text
+from src.components.components import button, text, image
 
 
 def create_task_buttons(task_pagos: TaskPagos):
-    def on_load_bases_click(e):
-        task_pagos.load_bases()
+    # Estados dinámicos para las casillas
+    get_bases_status = ft.Container(content=image("more"))
+    step_1_status = ft.Container(content=image("more"))
+    send_email_status = ft.Container(content=image("more"))
+    step_2_status = ft.Container(content=image("more"))
     
-    def on_subproccess_1_click(e):
-        task_pagos.subproccess_1()
+    def on_get_bases_click(e):
+        task_pagos.get_bases()
+        get_bases_status.content = image("check")
+        get_bases_status.update()
+    
+    def on_step_1_click(e):
+        task_pagos.execute_step_1()
+        step_1_status.content = image("check")
+        step_1_status.update()
     
     def on_send_email_click(e):
         task_pagos.send_email()
+        send_email_status.content = image("check")
+        send_email_status.update()
     
-    def on_subproccess_2_click(e):
-        task_pagos.subproccess_2()
+    def on_step_2_click(e):
+        task_pagos.execute_step_2()
+        step_2_status.content = image("check")
+        step_2_status.update()
     
     return ft.Column(
         [
-            button("Cargar Bases", on_load_bases_click),
-            button(
-                row_image_text("Paso 1", "email", "bbva_white", "body"),
-                on_subproccess_1_click
+            ft.Row(
+                controls=[
+                    button("Cargar Bases", on_get_bases_click),
+                    get_bases_status,
+                ],
+                spacing=10,
             ),
-            button("Enviar Correo", on_send_email_click),
-            button("Paso 2", on_subproccess_2_click),
+            ft.Row(
+                controls=[
+                    button("Paso 1", on_step_1_click),
+                    step_1_status,
+                ],
+                spacing=10,
+            ),
+            ft.Row(
+                controls=[
+                    ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                image("email"),
+                                text("Enviar Correo"),
+                                button(image("send"), on_send_email_click, width=50, bgcolor=None),
+                            ],
+                            alignment="center",
+                            spacing=10,
+                        ),
+                        width=250,
+                        height=35,
+                        padding=ft.padding.symmetric(horizontal=10),
+                        border_radius=ft.border_radius.all(0),
+                    ),
+                    send_email_status,
+                ], 
+                spacing = 10, 
+                alignment = "start",
+            ),
+            ft.Row(
+                controls=[
+                    button("Paso 2", on_step_2_click),
+                    step_2_status,
+                ],
+                spacing=10,
+            ),
         ],
-        spacing = 10,
+        spacing=20,
     )

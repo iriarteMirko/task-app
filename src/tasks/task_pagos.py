@@ -43,7 +43,7 @@ class TaskPagos():
         
         self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE', 'REACTIVA_KST']
     
-    def load_base_pagos(self):
+    def get_base_pagos(self):
         df_base = pd.read_excel(self.base_pagos_path)
         
         fecha_formateada = pd.to_datetime('today').strftime('%d-%b')
@@ -65,7 +65,7 @@ class TaskPagos():
         
         self.df_base = df_base
     
-    def load_base_asignacion(self):
+    def get_base_asignacion(self):
         df_asignacion = pd.read_excel(self.asignacion_path)
         
         cols_asignacion = ['CC', 'CONTRATO', 'NOMBRE_CLIENTE', 'TIPO_CARTERA', 'TIPO_FONDO', 'CARTERA', 'AGENCIA', 'FLAG']
@@ -76,7 +76,7 @@ class TaskPagos():
         
         self.df_asignacion = df_asignacion
     
-    def load_backups(self):
+    def get_backups(self):
         self.df_base_backup = self.df_base.copy()
         self.df_asignacion_backup = self.df_asignacion.copy()
         self.base_count = self.df_base_backup.shape[0]
@@ -117,11 +117,11 @@ class TaskPagos():
             'TIPO_FONDO', 'CARTERA', 'NOMBRE_CLIENTE', 'FECHA_ENVIO', 'ID_RESPONSABLE', 'TIPO_CARTERA', 'AGENCIA']
         self.df_base_backup = self.df_base_backup[cols_base]
     
-    def load_no_encontrados(self):
+    def get_no_encontrados(self):
         self.df_base_ne = self.df_base_backup[self.df_base_backup['FLAG'].isnull()]
         self.ne_count = self.df_base_ne.shape[0]
     
-    def load_monoproducto(self):
+    def get_monoproducto(self):
         self.df_mono = self.df_base_backup[self.df_base_backup['FLAG'] == 1]
         
         self.df_mono_final = self.df_mono[
@@ -144,7 +144,7 @@ class TaskPagos():
         print('Monoproducto:', self.df_mono_final.shape)
         print('Importe Monoproducto:', round(self.df_mono_final['IMPORTE'].sum(), 2),'\n')
     
-    def load_monoproducto_reactiva(self):
+    def get_monoproducto_reactiva(self):
         self.df_reactiva = self.df_mono[
             (self.df_mono['TIPO_CARTERA'] == 'UNSECURED') & 
             (self.df_mono['TIPO_FONDO'].isin(self.fondos_gobierno))
@@ -160,11 +160,11 @@ class TaskPagos():
         self.df_reactiva.to_excel(self.reactiva, index=False)
         self.reactiva_count = self.df_reactiva.shape[0]
     
-    def load_monoproducto_no_enviados(self):
+    def get_monoproducto_no_enviados(self):
         self.df_mono_no_enviado = self.df_mono[(self.df_mono['TIPO_CARTERA'] != 'UNSECURED')]
         self.mono_no_enviado_count = self.df_mono_no_enviado.shape[0]
     
-    def load_multiproducto(self):
+    def get_multiproducto(self):
         self.df_multi = self.df_base_backup[self.df_base_backup['FLAG'] > 1]
         self.multi_count = self.df_multi.shape[0]
         
@@ -185,11 +185,11 @@ class TaskPagos():
         self.df_multi_final.to_excel(self.multiproducto, index=False)
         self.multi_count = self.df_multi_final.shape[0]
     
-    def load_multiproducto_no_enviados(self):
+    def get_multiproducto_no_enviados(self):
         self.df_multi_no_enviado = self.df_multi[(self.df_multi['TIPO_CARTERA'] != 'UNSECURED')]
         self.multi_no_enviado_count = self.df_multi_no_enviado.shape[0]
     
-    def load_no_enviados(self):
+    def get_no_enviados(self):
         self.df_no_enviados = pd.concat([self.df_mono_no_enviado, self.df_multi_no_enviado, self.df_base_ne])
         self.df_no_enviados['FLAG'] = self.df_no_enviados['FLAG'].astype('Int64').fillna(0)
         
@@ -202,7 +202,7 @@ class TaskPagos():
         self.df_no_enviados.reset_index(drop=True, inplace=True)
         self.df_no_enviados.to_excel(self.no_enviados, index=False)
     
-    def load_multiproducto_agencias(self):
+    def get_multiproducto_agencias(self):
         df_1 = pd.read_excel(f'{self.folder_path}/agencias/RJ.xlsx', dtype={'CC': str, 'CONTRATO': str})
         df_2 = pd.read_excel(f'{self.folder_path}/agencias/CLASA.xlsx', dtype={'CC': str, 'CONTRATO': str})
         df_3 = pd.read_excel(f'{self.folder_path}/agencias/MORNESE.xlsx', dtype={'CC': str, 'CONTRATO': str})
@@ -347,34 +347,36 @@ class TaskPagos():
         start_file(file)
     
     def send_email(self):
-        if self.reactiva_count == 0:
-            flag_reactiva = False
-        else:
-            flag_reactiva = True
-        
-        CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
+        #if self.reactiva_count == 0:
+        #    flag_reactiva = False
+        #else:
+        #    flag_reactiva = True
+        #CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
+        print('Correo enviado.')
     
-    def load_bases(self):
+    def get_bases(self):
         print('Cargando bases...')
-        self.load_base_pagos()
+        #self.get_base_pagos()
         print('Base de pagos cargada.')
-        self.load_base_asignacion()
+        #self.get_base_asignacion()
         print('Base de asignación cargada.')
     
-    def subproccess_1(self):
-        self.load_backups()
-        self.merge_dataframes()
-        self.load_no_encontrados()
-        self.load_monoproducto()
-        self.load_monoproducto_reactiva()
-        self.load_monoproducto_no_enviados()
-        self.load_multiproducto()
-        self.load_multiproducto_no_enviados()
-        self.load_no_enviados()
-        self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
-        self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
-    
-    def subproccess_2(self):
-        self.load_multiproducto_agencias()
-        self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})
-        self.open_file([self.multi_path, self.reactiva_path, self.no_enviados_path, self.enviados_path])
+    def execute_step_1(self):
+        #self.get_backups()
+        #self.merge_dataframes()
+        #self.get_no_encontrados()
+        #self.get_monoproducto()
+        #self.get_monoproducto_reactiva()
+        #self.get_monoproducto_no_enviados()
+        #self.get_multiproducto()
+        #self.get_multiproducto_no_enviados()
+        #self.get_no_enviados()
+        #self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
+        #self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
+        print('Paso 1 completado.')
+
+    def execute_step_2(self):
+        #self.get_multiproducto_agencias()
+        #self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})
+        #self.open_file([self.multi_path, self.reactiva_path, self.no_enviados_path, self.enviados_path])
+        print('Paso 1 completado.')
