@@ -6,7 +6,7 @@ class Profile:
     def __init__(self, content_area):
         self.content_area = content_area
         self.container = ft.Container(
-            content = title("Bienvenido a tu perfil"),
+            content = title("Mi perfil"),
         )
     
     def load_profile(self):
