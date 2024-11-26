@@ -22,9 +22,11 @@ class TaskPagos():
         self.last_date = get_last_date_pagos(f'input/pagos/{self.fecha}')
         self.folder_path = get_or_create_folder(f'output/pagos/{self.fecha}', pagos=True)
         self.hora = get_hour_am_pm()
+        print("\nInicializando tareas de pagos...")
         print(self.last_date)
         print(self.folder_path)
         print(self.hora)
+        print("\n")
         
         self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'
         self.asignacion_path = f'input/asignacion/{self.fecha}/base_asignacion_{self.mes_año}.xlsx'
@@ -44,6 +46,7 @@ class TaskPagos():
         self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE', 'REACTIVA_KST']
     
     def get_base_pagos(self):
+        print("Cargando base de pagos...")
         df_base = pd.read_excel(self.base_pagos_path)
         
         fecha_formateada = pd.to_datetime('today').strftime('%d-%b')
@@ -64,8 +67,12 @@ class TaskPagos():
         df_base['CENTROPAGO'] = df_base['CENTROPAGO'].astype(str).str.zfill(4)
         
         self.df_base = df_base
+        print(df_base['FECHA'][0])
+        print(df_base.shape)
+        print("Base de pagos cargada.")
     
     def get_base_asignacion(self):
+        print("Cargando base de asignación...")
         df_asignacion = pd.read_excel(self.asignacion_path)
         
         cols_asignacion = ['CC', 'CONTRATO', 'NOMBRE_CLIENTE', 'TIPO_CARTERA', 'TIPO_FONDO', 'CARTERA', 'AGENCIA', 'FLAG']
@@ -75,6 +82,7 @@ class TaskPagos():
         df_asignacion['CONTRATO'] = df_asignacion['CONTRATO'].astype('Int64').astype(str).str.zfill(18)
         
         self.df_asignacion = df_asignacion
+        print("Base de asignación cargada.")
     
     def get_backups(self):
         self.df_base_backup = self.df_base.copy()
@@ -345,13 +353,6 @@ class TaskPagos():
     
     def open_file(self, file: str | list[str]):
         start_file(file)
-    
-    def get_bases(self):
-        print('Cargando bases...')
-        self.get_base_pagos()
-        print('Base de pagos cargada.')
-        self.get_base_asignacion()
-        print('Base de asignación cargada.')
     
     def execute_step_1(self):
         self.get_backups()

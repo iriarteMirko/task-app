@@ -4,15 +4,21 @@ from src.components.components import button, text, image
 
 
 def create_task_buttons(task_pagos: TaskPagos):
-    get_bases_status = ft.Container(content=image("more"))
+    get_asignacion_status = ft.Container(content=image("more"))
+    get_pagos_status = ft.Container(content=image("more"))
     step_1_status = ft.Container(content=image("more"))
     send_email_status = ft.Container(content=image("more"))
     step_2_status = ft.Container(content=image("more"))
     
-    def on_get_bases_click(e):
-        task_pagos.get_bases()
-        get_bases_status.content = image("check")
-        get_bases_status.update()
+    def on_get_asignacion_click(e):
+        task_pagos.get_base_asignacion()
+        get_asignacion_status.content = image("check")
+        get_asignacion_status.update()
+    
+    def on_get_pagos_click(e):
+        task_pagos.get_base_pagos()
+        get_pagos_status.content = image("check")
+        get_pagos_status.update()
     
     def on_step_1_click(e):
         task_pagos.execute_step_1()
@@ -33,8 +39,15 @@ def create_task_buttons(task_pagos: TaskPagos):
         [
             ft.Row(
                 controls = [
-                    button("Cargar Bases", on_get_bases_click),
-                    get_bases_status,
+                    button("Cargar Base de Asignación", on_get_asignacion_click),
+                    get_asignacion_status,
+                ],
+                spacing = 10,
+            ),
+            ft.Row(
+                controls = [
+                    button("Cargar Base de Pagos", on_get_pagos_click),
+                    get_pagos_status,
                 ],
                 spacing = 10,
             ),
