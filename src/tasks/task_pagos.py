@@ -18,15 +18,12 @@ warnings.filterwarnings('ignore')
 
 class TaskPagos():
     def __init__(self):
+        print("\n-------------------------------------------------")
+        print("Inicializando...")
         self.mes_año, self.fecha = get_date()
         self.last_date = get_last_date_pagos(f'input/pagos/{self.fecha}')
         self.folder_path = get_or_create_folder(f'output/pagos/{self.fecha}', pagos=True)
         self.hora = get_hour_am_pm()
-        print("\nInicializando tareas de pagos...")
-        print(self.last_date)
-        print(self.folder_path)
-        print(self.hora)
-        print("\n")
         
         self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'
         self.asignacion_path = f'input/asignacion/{self.fecha}/base_asignacion_{self.mes_año}.xlsx'
@@ -43,9 +40,15 @@ class TaskPagos():
         self.no_enviados_path = os.path.abspath(self.no_enviados)
         self.enviados_path = os.path.abspath(self.enviados)
         
-        self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE', 'REACTIVA_KST']
+        self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE']
+        
+        print(self.last_date)
+        print(self.folder_path)
+        print(self.hora)
+        print("\n")
     
     def get_base_pagos(self):
+        print("\n-------------------------------------------------")
         print("Cargando base de pagos...")
         df_base = pd.read_excel(self.base_pagos_path)
         
@@ -69,9 +72,10 @@ class TaskPagos():
         self.df_base = df_base
         print(df_base['FECHA'][0])
         print(df_base.shape)
-        print("Base de pagos cargada.")
+        print("\nCarga completada")
     
     def get_base_asignacion(self):
+        print("\n-------------------------------------------------")
         print("Cargando base de asignación...")
         df_asignacion = pd.read_excel(self.asignacion_path)
         
@@ -82,7 +86,8 @@ class TaskPagos():
         df_asignacion['CONTRATO'] = df_asignacion['CONTRATO'].astype('Int64').astype(str).str.zfill(18)
         
         self.df_asignacion = df_asignacion
-        print("Base de asignación cargada.")
+        print(df_asignacion.shape)
+        print("\nCarga completada")
     
     def get_backups(self):
         self.df_base_backup = self.df_base.copy()
@@ -146,9 +151,8 @@ class TaskPagos():
         self.df_mono_final.to_excel(self.monoproducto, index=False)
         self.mono_count = self.df_mono_final.shape[0]
         
-        print('\n-------------------------------------------- PASO 1 --------------------------------------------')
         print('Base Bagos: ', self.df_base.shape)
-        print('--------------------------------------------')
+        print('-------------------------------------------------')
         print('Monoproducto:', self.df_mono_final.shape)
         print('Importe Monoproducto:', round(self.df_mono_final['IMPORTE'].sum(), 2),'\n')
     
@@ -233,7 +237,7 @@ class TaskPagos():
         print('Contratos CLASA:', contratos_clasa)
         print('Contratos MORNESE:', contratos_mornese)
         print('Total:', contratos_rj + contratos_clasa + contratos_mornese)
-        print('--------------------------------------------------------------------------------------------------------------------------------------------')
+        print("-------------------------------------------------")
         
         df_agencias = pd.concat([df_1, df_2, df_3])
         df_agencias.dropna(subset=['CONTRATO'], inplace=True)
@@ -249,7 +253,7 @@ class TaskPagos():
         
         print('Multiproducto Original:', df_multi.shape[0])
         print('Multiproducto Agencias:', df_agencias.shape[0])
-        print('--------------------------------------------------------------------------------------------------------------------------------------------')
+        print("-------------------------------------------------")
         
         df_multi_contact = pd.concat([df_multi, df_agencias])
         df_multi_contact['CC'] = df_multi_contact['CC'].astype(str).replace(' ', '').astype('Int64').astype(str).str.zfill(8)
@@ -333,18 +337,18 @@ class TaskPagos():
         df_enviados.reset_index(drop=True, inplace=True)
         df_enviados.to_excel(self.enviados, index=False)
         
-        print('\n-------------------------------------------- REPORTE FINAL --------------------------------------------')
+        print('\n------------------------ REPORTE FINAL ------------------------')
         print('Base Bagos: ', self.df_base.shape)
-        print('--------------------------------------------')
+        print('-------------------------------------------------')
         print('Monoproducto:', self.df_mono_final.shape)
         print('Importe Monoproducto:', round(self.df_mono_final['IMPORTE'].sum(), 2))
-        print('--------------------------------------------')
+        print('-------------------------------------------------')
         print('Multiproducto:', df_multi_final.shape)
         print('Importe Multiproducto:', round(df_multi_final['IMPORTE'].sum(), 2))
-        print('--------------------------------------------')
+        print('-------------------------------------------------')
         print('Reactiva:', df_reactiva_final.shape)
         print('Importe Reactiva:', round(df_reactiva_final['IMPORTE'].sum(), 2))
-        print('--------------------------------------------')
+        print('-------------------------------------------------')
         print('No Enviados:', df_no_enviados_final.shape, '\n')
     
     def format_file(self, dict_files: dict[str, str]):
@@ -355,6 +359,8 @@ class TaskPagos():
         start_file(file)
     
     def execute_step_1(self):
+        print("\n-------------------------------------------------")
+        print("Inicializando paso 1...")
         self.get_backups()
         self.merge_dataframes()
         self.get_no_encontrados()
@@ -366,18 +372,22 @@ class TaskPagos():
         self.get_no_enviados()
         self.format_file({self.mono_path: 'mono', self.multi_path: 'multi_agencias', self.reactiva_path: 'react_agencias', self.no_enviados_path: 'noenv'})
         self.open_file([self.mono_path, self.multi_path, self.reactiva_path, self.no_enviados_path])
-        print('Paso 1 completado.')
+        print('\nPaso 1 completado')
     
     def send_email(self):
+        print("\n-------------------------------------------------")
+        print("Enviando correo...")
         if self.reactiva_count == 0:
             flag_reactiva = False
         else:
             flag_reactiva = True
         CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
-        print('Correo enviado.')
+        print('\nEnvio de correo completado')
     
     def execute_step_2(self):
+        print("\n-------------------------------------------------")
+        print("Inicializando paso 2...")
         self.get_multiproducto_agencias()
         self.format_file({self.multi_path: 'multi', self.reactiva_path: 'reactiva', self.no_enviados_path: 'noenv', self.enviados_path: 'env'})
         self.open_file([self.multi_path, self.reactiva_path, self.no_enviados_path, self.enviados_path])
-        print('Paso 2 completado.')
+        print('\nPaso 2 completado')
