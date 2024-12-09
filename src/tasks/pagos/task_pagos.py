@@ -1,6 +1,7 @@
 from src.utils.multiproducto import CorreoMultiproducto
 from src.utils.utils import (
     get_date, 
+    get_or_create_task_path, 
     get_last_date_pagos, 
     get_or_create_folder, 
     get_hour_am_pm, 
@@ -21,8 +22,9 @@ class TaskPagos():
         print("\n-------------------------------------------------")
         print("Inicializando...")
         self.mes_año, self.fecha = get_date()
+        self.input_folder, self.output_folder = get_or_create_task_path('pagos')
+        self.folder_path = get_or_create_folder(self.output_folder)
         self.last_date = get_last_date_pagos(f'input/pagos/{self.fecha}')
-        self.folder_path = get_or_create_folder(f'output/pagos/{self.fecha}', pagos=True)
         self.hora = get_hour_am_pm()
         
         self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'

@@ -1,5 +1,5 @@
 import flet as ft
-from tasks.pagos.task_pagos import TaskPagos
+from src.tasks.pagos.task_pagos import TaskPagos
 from src.components.components import button, text, image
 
 

@@ -9,6 +9,26 @@ from openpyxl.styles import Font, PatternFill, Alignment
 locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
 
 
+def get_or_create_task_path(task: str):
+    fecha = datetime.now().strftime('%Y%m')
+    input_folder = os.path.join('input')
+    output_folder = os.path.join('output')
+    input_task_path = os.path.join(input_folder, task, fecha)
+    output_task_path = os.path.join(output_folder, task, fecha)
+    
+    if not os.path.exists(input_folder):
+        os.makedirs(input_folder)
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    
+    if not os.path.exists(input_task_path):
+        os.makedirs(input_task_path)
+    if not os.path.exists(output_task_path):
+        os.makedirs(output_task_path)
+    
+    return input_task_path, output_task_path
+
+
 def get_date(mes_anterior=False) -> tuple[str, str]:
     """Devuelve el mes y año actual o del mes anterior en formato de texto y número."""
     hoy = datetime.now()
@@ -51,7 +71,7 @@ def get_last_date_pagos(folder_path: str) -> str:
     return last_date.strftime('%d.%m.%Y')
 
 
-def get_or_create_folder(folder_path: str, pagos: bool = False) -> str:
+def get_or_create_folder(folder_path: str) -> str:
     """Crea un directorio si no existe y devuelve su ruta."""
     fecha_hoy = datetime.today().strftime('%Y.%m.%d')
     carpeta_hoy = os.path.join(folder_path, fecha_hoy)
@@ -59,9 +79,8 @@ def get_or_create_folder(folder_path: str, pagos: bool = False) -> str:
     if not os.path.exists(carpeta_hoy):
         os.makedirs(carpeta_hoy)
     
-    if pagos:
-        if not os.path.exists(f'{carpeta_hoy}/agencias'):
-            os.makedirs(f'{carpeta_hoy}/agencias')
+    if not os.path.exists(f'{carpeta_hoy}/agencias'):
+        os.makedirs(f'{carpeta_hoy}/agencias')
     
     return carpeta_hoy
 
