@@ -20,21 +20,32 @@ warnings.filterwarnings('ignore')
 class TaskPagos():
     def __init__(self):
         print("\n-------------------------------------------------")
-        print("Inicializando...")
+        print("Inicializando...\n")
         self.mes_año, self.fecha = get_date()
         self.input_folder, self.output_folder = get_or_create_task_path('pagos')
+        self.input_folder_asignacion, _ = get_or_create_task_path('asignacion')
         self.folder_path = get_or_create_folder(self.output_folder)
-        self.last_date = get_last_date_pagos(f'input/pagos/{self.fecha}')
+        self.last_date = get_last_date_pagos(self.input_folder)
         self.hora = get_hour_am_pm()
         
-        self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'
-        self.asignacion_path = f'input/asignacion/{self.fecha}/base_asignacion_{self.mes_año}.xlsx'
+        if not self.last_date:
+            print(f'No se encontraron archivos en {self.input_folder}')
+            return
         
-        self.monoproducto = f'{self.folder_path}/MONOPRODUCTO_{self.last_date}.xlsx'
-        self.multiproducto = f'{self.folder_path}/MULTIPRODUCTO_{self.last_date}.xlsx'
-        self.reactiva = f'{self.folder_path}/REACTIVA_{self.last_date}.xlsx'
-        self.no_enviados = f'{self.folder_path}/NO_ENVIADOS_{self.last_date}.xlsx'
-        self.enviados = f'{self.folder_path}/ENVIADOS_{self.last_date}.xlsx'
+        self.base_pagos_path = f'{self.input_folder}\\Base Pagos {self.last_date}.xlsx'
+        self.asignacion_path = f'{self.input_folder_asignacion}\\base_asignacion_{self.mes_año}.xlsx'
+        print(self.base_pagos_path)
+        print(self.asignacion_path)
+        print("\n")
+        print(self.folder_path)
+        print(self.hora)
+        print("\n")
+        
+        self.monoproducto = f'{self.folder_path}\\MONOPRODUCTO_{self.last_date}.xlsx'
+        self.multiproducto = f'{self.folder_path}\\MULTIPRODUCTO_{self.last_date}.xlsx'
+        self.reactiva = f'{self.folder_path}\\REACTIVA_{self.last_date}.xlsx'
+        self.no_enviados = f'{self.folder_path}\\NO_ENVIADOS_{self.last_date}.xlsx'
+        self.enviados = f'{self.folder_path}\\ENVIADOS_{self.last_date}.xlsx'
         
         self.mono_path = os.path.abspath(self.monoproducto)
         self.multi_path = os.path.abspath(self.multiproducto)
@@ -43,11 +54,6 @@ class TaskPagos():
         self.enviados_path = os.path.abspath(self.enviados)
         
         self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE']
-        
-        print(self.last_date)
-        print(self.folder_path)
-        print(self.hora)
-        print("\n")
     
     def get_base_pagos(self):
         print("\n-------------------------------------------------")
@@ -379,10 +385,7 @@ class TaskPagos():
     def send_email(self):
         print("\n-------------------------------------------------")
         print("Enviando correo...")
-        if self.reactiva_count == 0:
-            flag_reactiva = False
-        else:
-            flag_reactiva = True
+        flag_reactiva = self.reactiva_count != 0
         CorreoMultiproducto(self.last_date, self.folder_path, self.hora, flag_reactiva).enviar_correo()
         print('\nEnvio de correo completado')
     

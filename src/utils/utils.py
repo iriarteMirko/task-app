@@ -51,7 +51,7 @@ def get_date(mes_anterior=False) -> tuple[str, str]:
     return mes_año, fecha
 
 
-def get_last_date_pagos(folder_path: str) -> str:
+def get_last_date_pagos(folder_path: str) -> str | None:
     file_list = []
     dates_list = []
     
@@ -59,8 +59,11 @@ def get_last_date_pagos(folder_path: str) -> str:
         if file.endswith('.xlsx') and 'Base Pagos' in file:
             file_list.append(file)
     
+    if not file_list:
+        return None
+    
     for file in file_list:
-        fecha_list =  str(file).split(' ')[-1].split('.')[:3]
+        fecha_list = str(file).split(' ')[-1].split('.')[:3]
         dates_list.append(datetime.strptime(f'{fecha_list[0]}.{fecha_list[1]}.{fecha_list[2]}', '%d.%m.%Y'))
     
     last_date: datetime = dates_list[0]
