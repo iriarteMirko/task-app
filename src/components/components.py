@@ -60,4 +60,3 @@ def separator() -> ft.Container:
         height = 1,
         bgcolor = AppConfig.COLORS["bbva_light_gray"],
     )
-

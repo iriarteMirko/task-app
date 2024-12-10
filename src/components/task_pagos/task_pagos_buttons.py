@@ -1,6 +1,7 @@
 import flet as ft
 from src.tasks.pagos.task_pagos import TaskPagos
 from src.components.components import button, text, image
+from src.config import AppConfig
 
 
 def create_task_buttons(task_pagos: TaskPagos):
@@ -30,13 +31,13 @@ def create_task_buttons(task_pagos: TaskPagos):
     ]
     
     def disable_buttons():
-        """Deshabilita todos los botones."""
+        """Deshabilita todos los botones y cambia su color."""
         for btn in all_buttons:
             btn.disabled = True
             btn.update()
     
     def enable_buttons():
-        """Habilita todos los botones."""
+        """Habilita todos los botones y restaura su color."""
         for btn in all_buttons:
             btn.disabled = False
             btn.update()
