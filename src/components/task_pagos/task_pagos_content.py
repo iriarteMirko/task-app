@@ -1,5 +1,5 @@
 import flet as ft
-from src.tasks.task_pagos import TaskPagos
+from src.tasks.pagos.task_pagos import TaskPagos
 from src.components.components import title, separator
 from src.components.task_pagos.task_pagos_buttons import create_task_buttons
 

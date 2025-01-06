@@ -26,7 +26,7 @@ class TaskPagos():
         self.hora = get_hour_am_pm()
         
         self.base_pagos_path = f'input/pagos/{self.fecha}/Base Pagos {self.last_date}.xlsx'
-        self.asignacion_path = f'input/asignacion/{self.fecha}/base_asignacion_{self.mes_año}.txt'
+        self.asignacion_path = f'input/asignacion/{self.fecha}/base_asignacion_{self.mes_año}.xlsx'
         
         self.monoproducto = f'{self.folder_path}/MONOPRODUCTO_{self.last_date}.xlsx'
         self.multiproducto = f'{self.folder_path}/MULTIPRODUCTO_{self.last_date}.xlsx'
@@ -77,7 +77,8 @@ class TaskPagos():
     def get_base_asignacion(self):
         print("\n-------------------------------------------------")
         print("Cargando base de asignación...")
-        df_asignacion = pd.read_csv(self.asignacion_path, sep='|', encoding='utf-8')
+        df_asignacion = pd.read_excel(self.asignacion_path)
+        
         cols_asignacion = ['CC', 'CONTRATO', 'NOMBRE_CLIENTE', 'TIPO_CARTERA', 'TIPO_FONDO', 'CARTERA', 'AGENCIA', 'FLAG']
         df_asignacion = df_asignacion[cols_asignacion]
         
