@@ -189,5 +189,17 @@ def format_excel(file_path: str, validator: str) -> None:
             sheet.cell(row=1, column=col).fill = header_fill_orange
             sheet.cell(row=1, column=col).font = header_font_white
     
+    for column in sheet.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(cell.value)
+            except:
+                pass
+        adjusted_width = (max_length + 2)
+        sheet.column_dimensions[column_letter].width = adjusted_width
+    
     workbook.save(file_path)
 

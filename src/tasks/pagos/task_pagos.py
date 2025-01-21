@@ -166,11 +166,12 @@ class TaskPagos():
         ]
         
         self.df_reactiva['TIPO_PAGO'] = None
+        
         cols_reactiva = ['FECHA', 'CC', 'CLAVSERV', 'CENTROPAGO', 'IMPORTE', 'MONEDA', 'NOMBRE', 
-            'FLAG', 'CONTRATO', 'TIPO_FONDO', 'CARTERA', 'TIPO_PAGO', 'FECHA_ENVIO', 'ID_RESPONSABLE']
+            'FLAG', 'CONTRATO', 'TIPO_FONDO', 'CARTERA', 'TIPO_PAGO', 'FECHA_ENVIO', 'ID_RESPONSABLE', 'AGENCIA']
         self.df_reactiva = self.df_reactiva[cols_reactiva]
         
-        self.df_reactiva.sort_values(by=['FECHA', 'CC'], inplace=True)
+        self.df_reactiva.sort_values(by=['FECHA', 'CONTRATO'], inplace=True)
         self.df_reactiva.reset_index(drop=True, inplace=True)
         self.df_reactiva.to_excel(self.reactiva, index=False)
         self.reactiva_count = self.df_reactiva.shape[0]
