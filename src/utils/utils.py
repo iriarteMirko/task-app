@@ -172,7 +172,7 @@ def format_excel(file_path: str, validator: str) -> None:
         for col in range(10, 13):  # Columnas J-L
             sheet.cell(row=1, column=col).fill = header_fill_green
             sheet.cell(row=1, column=col).font = header_font_white
-        for col in range(13, 15):  # Columnas M-N
+        for col in range(13, 16):  # Columnas M-O
             sheet.cell(row=1, column=col).fill = header_fill_yellow
             sheet.cell(row=1, column=col).font = header_font_white
     

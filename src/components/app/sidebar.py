@@ -29,7 +29,7 @@ def create_sidebar(on_select):
                     label = "Inicio",
                 ),
                 ft.NavigationRailDestination(
-                    icon_content = ft.Image(src=AppConfig.ICONS["process"], width=20, fit=ft.ImageFit.CONTAIN),
+                    icon_content = ft.Image(src=AppConfig.ICONS["dollar"], width=20, fit=ft.ImageFit.CONTAIN),
                     label = "Pagos",
                 ),
                 ft.NavigationRailDestination(
@@ -40,4 +40,5 @@ def create_sidebar(on_select):
             on_change = on_select,
         ),
         margin = ft.margin.only(right=-10),
+        width = 100,
     )

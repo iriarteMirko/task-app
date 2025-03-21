@@ -1,7 +1,6 @@
 import flet as ft
 from src.tasks.pagos.task_pagos import TaskPagos
 from src.components.components import button, text, image
-from src.config import AppConfig
 
 
 def create_task_buttons(task_pagos: TaskPagos):

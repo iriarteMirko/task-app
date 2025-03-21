@@ -49,7 +49,7 @@ class TaskPagos():
         self.no_enviados_path = os.path.abspath(self.no_enviados)
         self.enviados_path = os.path.abspath(self.enviados)
         
-        self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE']
+        self.fondos_gobierno = ['REACTIVA', 'CRECER', 'FAE', 'IMPULSO MYPERU']
     
     def get_base_pagos(self):
         print("\n-------------------------------------------------")
