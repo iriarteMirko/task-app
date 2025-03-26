@@ -13,12 +13,30 @@ class ContentTaskPagos(ft.Container):
         self.separator = separator()
         self.buttons = create_task_buttons(self.task_pagos)
         self.busqueda = ContentTaskPagosBusqueda()
+        
         self.content = ft.Column(
             controls = [
                 self.title,
                 self.separator,
-                self.buttons,
-                self.busqueda.content,
+                ft.Row(
+                    controls = [
+                        ft.Column(
+                            controls = [
+                                self.buttons,
+                            ],
+                            spacing = 20,
+                            expand = 0,
+                        ),
+                        ft.Column(
+                            controls = [
+                                self.busqueda.content,
+                            ],
+                            spacing = 20,
+                            expand = 0,
+                        ),
+                    ],
+                    spacing = 20,
+                ),
             ],
             spacing = 20,
         )
